@@ -1,0 +1,114 @@
+# DevToolKit 기본 기술 스택 + 아키텍처 + 코드 컨벤션 설정
+# PRD에 명시되어 있으면 PRD가 우선.
+# 이 파일은 PRD에 없을 때의 기본값(fallback)으로 사용된다.
+
+project:
+  name: "realworld-py"
+  description: "RealWorld(Conduit) 기반 게시판 — Python 백엔드 + React SPA. 학습 과제 (2일 마감)."
+  type: "fullstack"                    # fullstack | frontend | backend | library
+
+tech_stack:
+  frontend:
+    framework: "react"                 # 게이트 B 결정 (v0.2)
+    version: "19"
+    language: "typescript"
+    build_tool: "vite"
+    styling: ""                        # 게이트 C 결정 (ADR-0038 후보)
+    state_management: "zustand"        # 기본값 유지, 게이트 C 재검토 가능
+    testing: "vitest"                  # F-04 UI 단위/통합 N/A 결정, 필요 시만
+    e2e_testing: "playwright"          # gstack /qa로 대체 가능
+    linting: "eslint"
+    formatting: "prettier"
+
+  backend:
+    framework: "fastapi"               # 게이트 B 결정 (v0.2)
+    version: ""                        # 게이트 C에서 최신 stable 확정
+    language: "python"
+    python_version: "3.11"             # 게이트 C 확정 예정
+    build_tool: "uv"                   # Astral uv 권장, 게이트 C 확정
+    database: ""                       # SQLite vs PostgreSQL — 게이트 C 결정
+    orm: "sqlalchemy"                  # 기본값, 게이트 C 확정
+    cache: "none"
+    testing: "pytest"
+    api_docs: "openapi (FastAPI 자동 생성)"
+
+  infrastructure:
+    containerization: "docker"         # 선택 (학습 컨텍스트, 필수 아님)
+    ci_cd: "github-actions"
+    cloud: ""                          # 클라우드 배포 Out of Scope (RFP §NFR-06)
+
+# ============================================================
+# 아키텍처 패턴
+# PRD에 아키텍처 요구사항이 있으면 PRD 우선.
+# ============================================================
+architecture:
+  frontend:
+    pattern: "feature-based"           # feature-based | atomic | fsd | atomic-fsd
+    # feature-based: features/{feature}/components,hooks,types (기본, 중소규모)
+    # atomic: atoms/molecules/organisms/templates/pages (UI 컴포넌트 중심)
+    # fsd: Feature-Sliced Design (app/processes/pages/widgets/features/entities/shared)
+    # atomic-fsd: Atomic + FSD 혼합 (대규모 프로젝트)
+    ui_library: ""                     # shadcn | mui | antd | chakra | none
+    # shadcn: Radix UI + TailwindCSS 기반 (커스터마이징 용이)
+    # mui: Material UI (Google Material Design)
+    # antd: Ant Design (엔터프라이즈)
+
+  backend:
+    pattern: "layered"                 # layered | hexagonal | clean | ddd
+    # layered: Controller → Service → Repository → Entity (기본, 중소규모)
+    # hexagonal: Port & Adapter (외부 시스템 연동 많을 때)
+    # clean: Clean Architecture (UseCase 중심, 의존성 역전)
+    # ddd: Domain-Driven Design (복잡한 비즈니스 로직)
+
+# ============================================================
+# 코드 컨벤션
+# Architect 에이전트가 docs/design/code-conventions.md 생성 시 참조.
+# ============================================================
+conventions:
+  frontend:
+    component_style: "function"        # function (기본) | class
+    file_naming: "PascalCase"          # PascalCase (컴포넌트), camelCase (유틸/훅)
+    hook_prefix: "use"                 # useTodos, useAuth 등
+    api_client: "fetch"               # fetch | axios | ky
+    error_boundary: true
+    strict_mode: true
+
+  backend:
+    package_base: "realworld"          # FastAPI 모듈 루트. 게이트 C 확정
+    layer_naming:                      # FastAPI 컨벤션 (라우터·서비스·리포지토리·스키마)
+      router: "{domain}_router"
+      service: "{Domain}Service"
+      repository: "{Domain}Repository"
+      model: "{Domain}"                # SQLAlchemy 모델
+      schema_request: "{Domain}CreateSchema"
+      schema_response: "{Domain}Schema"
+    exception_handling: "global"       # FastAPI exception_handlers 통합
+    response_wrapper: ""               # RealWorld spec은 `{ user: {...} }` 등 래핑이 기본. 별도 ApiResponse 미사용
+    error_code_pattern: "{DOMAIN}_{CATEGORY}_{DETAIL}"  # AUTH_TOKEN_EXPIRED 등
+    validation: "pydantic"             # Pydantic 모델로 자동 검증
+    logging: "stdlib-logging"          # 외부 로깅 시스템 Out of Scope
+
+  common:
+    git_commit_format: "conventional"  # conventional (feat/fix/chore) | free
+    branch_prefix: "feature/"          # feature/ | feat/
+    pr_template: true
+    code_review: "required"
+
+# ============================================================
+# 빌드·실행 명령은 본 파일에 두지 않음 (ADR-0041 — devkit wrapper 폐기)
+# 정본 = docs/planning/12-scaffolding/12-scaffolding.md §5 (SoT)
+#       + 루트 LOCAL.md §3 Profile별 부팅 명령 (유저 facing, ADR-0040)
+# /implement, /qa-test 등은 12-scaffolding §5 / LOCAL.md §3을 직접 참조한다.
+# (이전 ADR-0027 3-fallback / ADR-0028 commands.* 블록은 ADR-0041로 폐기)
+# ============================================================
+
+collaboration:
+  vcs: "github"                        # 필수
+  branching_strategy: "gitflow"        # gitflow | trunk-based | github-flow
+  code_review: "required"
+
+agent:
+  team_size: 3                         # 3~5 권장
+  parallel_tasks: true
+  safety_guard: true                   # /careful 상시 활성화
+  # teammate_mode는 .claude/settings.json의 teammateMode에서 설정
