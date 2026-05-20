@@ -11,6 +11,7 @@
 | Version | Date | Author | Change |
 |---|---|---|---|
 | v0.1 | 2026-05-20 | woosung.ahn@bespinglobal.com | 초안 — `/flow-design` Phase 2/4 진행 중 §1~§6 채움 (FastAPI + React/Vite 풀스택 monorepo, 단일 환경 운영, (e) 워크스페이스별 .env 분리 채택) |
+| v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 부팅 골격 완성 후 §3.1 backend 명령 실 검증. `/health` `/docs` `/openapi.json` 모두 200 응답 확인. frontend는 Issue #7에서 검증 예정 (해당 부분은 placeholder 유지) |
 
 ---
 
@@ -140,6 +141,7 @@ open http://localhost:5173
 - **환경 변수 출처**: `backend/.env` + `frontend/.env`
 - **DB**: `backend/data/realworld.db` (SQLite file)
 - **Hot reload**: O (backend `--reload`, frontend Vite HMR)
+- **검증 확인 (Issue #1)**: backend는 실 검증 완료 — `curl http://localhost:8000/health` → `{"status":"ok"}` (200), `curl -I http://localhost:8000/docs` → `HTTP/1.1 200 OK`. frontend는 Issue #7 머지 후 검증.
 
 ### 3.2 stg profile (스테이징)
 

@@ -1,6 +1,6 @@
 ---
 doc_type: wbs
-version: v0.3 (Draft)
+version: v0.4 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-20
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.4 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 — `I-01` status:in-review 전이. PR #11 (feat/bootstrap-backend-issue-1). docs(boot)+chore(backend) 8 커밋. 다음 진입: I-02 User 모델 + 마이그레이션 |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | §7 sprint-bootstrap YAML 정합 갱신 — milestone/due 키 추가, ADR-0021 title 형식(`<type>(<area>): <summary>`), priority:P0/P1 라벨 정합 |
 | v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | 일정 16h(2일 × 8h) 기준 재조정 — §0·§6 절대 시간 단위로 명시. effort 단위 의미 재정의(AI 페어 가속 환산). RISK-01 §3.1과 동기 |
 | v0.1 | 2026-05-20 | woosung.ahn@bespinglobal.com | 초안 (`/flow-wbs` Phase 3/4, Sprint 2 × Issue 10 — R-/F-ID 100% 매핑, §7 sprint-bootstrap YAML 작성) |

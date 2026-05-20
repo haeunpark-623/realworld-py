@@ -18,6 +18,7 @@ related:
 | Version | Date | Author | Change |
 |---|---|---|---|
 | v0.1 | 2026-05-20 | woosung.ahn@bespinglobal.com | 초안 (`/flow-design` Phase 2/4, Python + FastAPI 백엔드 + frontend 큰 그림. ADR-0037 v1.1 단일 환경 운영 명시 / ADR-0040 LOCAL.md 양축) |
+| v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 후 정합 갱신 — §1 트리에서 backend/ 하위로 `.env.example`·`data/`·`.gitignore`·`.python-version`·`.pre-commit-config.yaml` 위치 명시(루트 위치 placeholder 제거) / §6 DATABASE_URL 경로 명시 (backend cwd 기준) + JWT_ALG/JWT_EXPIRE_MINUTES 본 PR 채택 키명 반영 / §1 backend-ci.yml + 기존 워크플로 2건 추가 |
 
 ## 1. 디렉토리 트리
 
@@ -26,6 +27,10 @@ realworld-py/
 ├── backend/
 │   ├── pyproject.toml              # uv 패키지·도구 설정
 │   ├── uv.lock                     # 의존성 lockfile
+│   ├── .python-version             # Python 3.11 핀 (uv 자동 인식, Issue #1)
+│   ├── .env.example                # 환경 변수 템플릿 — backend 워크스페이스 분리 채택 (Issue #1, (e) §1.5.1)
+│   ├── .gitignore                  # backend 한정 (`.env`, `.venv/`, `data/*`, `__pycache__/` 등 — Issue #1)
+│   ├── data/                       # SQLite 파일 (.gitkeep만 추적, `*.db` ignore — Issue #1)
 │   ├── alembic.ini                 # Alembic 마이그레이션 설정
 │   ├── alembic/
 │   │   ├── env.py
@@ -121,13 +126,13 @@ realworld-py/
 │       │   └── Modal.tsx
 │       └── types/
 │           └── api.ts              # RealWorld spec 응답 타입
-├── data/                            # SQLite 파일 (gitignore)
-├── .env.example                     # 환경 변수 템플릿 (단일 dev profile)
 ├── .gitignore
-├── .pre-commit-config.yaml
+├── .pre-commit-config.yaml          # ruff + 일반 6 훅 (Issue #1 채택)
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                   # pytest + ruff + black + tsc + eslint
+│       ├── backend-ci.yml           # backend PR/push 트리거 — uv sync + ruff + alembic + pytest (Issue #1)
+│       ├── issue-pr-title-lint.yml  # ADR-0021 정규식 검증
+│       └── sync-issue-labels.yml    # FSM 라벨 sync
 ├── LOCAL.md                         # 부팅 가이드 (사용자 정본, ADR-0040)
 ├── CLAUDE.md                        # 툴킷 지침
 ├── README.md                        # 프로젝트 개요
@@ -239,11 +244,12 @@ cd frontend && pnpm install --frozen-lockfile && pnpm dev
 
 | 키 | dev | stg | prod | 노출 위치 |
 |---|---|---|---|---|
-| `DATABASE_URL` | `sqlite+aiosqlite:///./data/realworld.db` | N/A — dev 공유 | N/A — dev 공유 | `.env.example`, FastAPI `Settings` |
-| `JWT_SECRET` | 로컬 랜덤 (각자 생성, .env에 보관) | N/A | N/A | `.env.example` placeholder, `Settings` |
-| `JWT_EXP_SECONDS` | `604800` (7일) | N/A | N/A | `.env.example`, `Settings` |
-| `CORS_ORIGINS` | `http://localhost:5173` | N/A | N/A | `.env.example`, FastAPI 앱 init |
-| `LOG_LEVEL` | `INFO` | N/A | N/A | `.env.example`, stdlib logging |
+| `DATABASE_URL` | `sqlite+aiosqlite:///./data/realworld.db` (backend cwd 기준 — `backend/data/realworld.db`) | N/A — 단일 환경 운영 | N/A — 단일 환경 운영 | `backend/.env.example`, FastAPI `Settings` |
+| `JWT_SECRET` | 로컬 랜덤 (각자 생성, `backend/.env`에 보관). `python -c "import secrets; print(secrets.token_urlsafe(32))"` | N/A | N/A | `backend/.env.example` placeholder `changeme-please-generate-random-32-chars`, `Settings` |
+| `JWT_ALG` | `HS256` | N/A | N/A | `backend/.env.example`, `Settings` |
+| `JWT_EXPIRE_MINUTES` | `10080` (7일 = 60*24*7) | N/A | N/A | `backend/.env.example`, `Settings` |
+| `CORS_ORIGINS` | `http://localhost:5173` | N/A | N/A | `backend/.env.example`, FastAPI 앱 init |
+| `LOG_LEVEL` | `INFO` | N/A | N/A | `backend/.env.example`, stdlib logging |
 | `VITE_API_BASE_URL` | `http://localhost:8000/api` | N/A | N/A | `frontend/.env.example` (vite는 `VITE_` prefix만 클라이언트 노출) |
 
 **보안 절대 규칙 (CLAUDE.md)**: `.env` 파일은 .gitignore 강제. `JWT_SECRET` 등 실제 값은 코드·로그·커밋 메시지·PR 본문 어디에도 평문 포함 금지. `.env.example` placeholder 형식 — `JWT_SECRET=<your-random-secret-here>`.

@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment files (security: never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# SQLite database files (dev iteration; ADR-0037 v1.1 단일 환경 운영)
+data/*
+!data/.gitkeep
+*.db
+*.db-journal
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+
+# ruff
+.ruff_cache/
+
+# OS
+.DS_Store
+Thumbs.db
