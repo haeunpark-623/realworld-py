@@ -1,6 +1,6 @@
 ---
 doc_type: index
-version: v0.5
+version: v0.6
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-20
@@ -10,12 +10,13 @@ related: { R-ID: [], F-ID: [], supersedes: null }
 
 # realworld-py — docs/planning Index
 
-> Phase 1~4/4 NEW_PROJECT 메타 모두 완료. mode=sprint 진입. Sprint 1 Issue #1 PR #11 머지 대기 (status:in-review).
+> Phase 1~4/4 NEW_PROJECT 메타 모두 완료. mode=sprint 진입. Sprint 1 Issue #1 머지 완료(PR #11). Issue #2 PR #12 머지 대기 (status:in-review).
 
 ## 변경 이력
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.6 | 2026-05-20 | woosung.ahn@bespinglobal.com | Sprint 1 Issue #1 머지 완료 + Issue #2 작업 진입 + PR #12 open (status:in-review). 12-scaffolding v0.3 (§1 트리에 test_user_repo.py 추가). 14-wbs v0.5 (I-02 상태 in-review) |
 | v0.5 | 2026-05-20 | woosung.ahn@bespinglobal.com | Sprint 1 Issue #1 작업 진입 + PR #11 open (status:in-review). 12-scaffolding v0.2 정합 갱신 (§1 트리·§6 env 키 정합). 14-wbs v0.4 (I-01 상태 in-review) |
 | v0.4 | 2026-05-20 | woosung.ahn@bespinglobal.com | `/flow-wbs` Phase 3/4 완료 — 15-risk(8건) + 14-wbs(Sprint 2 × Issue 10 + §7 sprint-bootstrap YAML) 작성. validate-doc.sh PASS |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | `/flow-design` Phase 2/4 완료 — 06·07·08·09·10·11·12·13 산출 8건 + ADR 4건 작성. validate-doc.sh 모두 PASS |

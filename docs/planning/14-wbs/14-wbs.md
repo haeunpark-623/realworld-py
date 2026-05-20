@@ -1,6 +1,6 @@
 ---
 doc_type: wbs
-version: v0.4 (Draft)
+version: v0.5 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-20
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.5 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 완료(PR #11) + Issue #2 작업 진입 — `I-02` status:in-review 전이. PR #12 (feat/user-model-issue-2). feat(backend)+test(backend)+docs(feat) 6 커밋. User 모델·UserRepo 3 메서드·alembic 0002 add_users + 단위 테스트 3 PASS. 다음 진입: I-03 AuthService + bcrypt + JWT |
 | v0.4 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 — `I-01` status:in-review 전이. PR #11 (feat/bootstrap-backend-issue-1). docs(boot)+chore(backend) 8 커밋. 다음 진입: I-02 User 모델 + 마이그레이션 |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | §7 sprint-bootstrap YAML 정합 갱신 — milestone/due 키 추가, ADR-0021 title 형식(`<type>(<area>): <summary>`), priority:P0/P1 라벨 정합 |
 | v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | 일정 16h(2일 × 8h) 기준 재조정 — §0·§6 절대 시간 단위로 명시. effort 단위 의미 재정의(AI 페어 가속 환산). RISK-01 §3.1과 동기 |
