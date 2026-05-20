@@ -1,6 +1,6 @@
 ---
 doc_type: scaffolding
-version: v0.1 (Draft)
+version: v0.3 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-20
@@ -17,8 +17,9 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
-| v0.1 | 2026-05-20 | woosung.ahn@bespinglobal.com | 초안 (`/flow-design` Phase 2/4, Python + FastAPI 백엔드 + frontend 큰 그림. ADR-0037 v1.1 단일 환경 운영 명시 / ADR-0040 LOCAL.md 양축) |
+| v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #2 머지 진입 — §1 트리에서 `tests/unit/test_user_repo.py` 명시 (현 PR 추가) + `models/base.py`·`models/user.py`·`repositories/user.py` 실제 도입 확인 (v0.1 트리에서 이미 명시). v0.4에서 후속 모델·repo 도입 시 갱신 |
 | v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 후 정합 갱신 — §1 트리에서 backend/ 하위로 `.env.example`·`data/`·`.gitignore`·`.python-version`·`.pre-commit-config.yaml` 위치 명시(루트 위치 placeholder 제거) / §6 DATABASE_URL 경로 명시 (backend cwd 기준) + JWT_ALG/JWT_EXPIRE_MINUTES 본 PR 채택 키명 반영 / §1 backend-ci.yml + 기존 워크플로 2건 추가 |
+| v0.1 | 2026-05-20 | woosung.ahn@bespinglobal.com | 초안 (`/flow-design` Phase 2/4, Python + FastAPI 백엔드 + frontend 큰 그림. ADR-0037 v1.1 단일 환경 운영 명시 / ADR-0040 LOCAL.md 양축) |
 
 ## 1. 디렉토리 트리
 
@@ -84,6 +85,7 @@ realworld-py/
 │       ├── __init__.py
 │       ├── conftest.py             # pytest fixture (DB, app, client, user factory)
 │       ├── unit/
+│       │   ├── test_user_repo.py     # UserRepo 3 메서드 (Issue #2)
 │       │   ├── test_auth_service.py
 │       │   ├── test_article_service.py
 │       │   ├── test_comment_service.py
