@@ -1,6 +1,6 @@
 ---
 doc_type: wbs
-version: v0.11 (Draft)
+version: v0.12 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.12 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #8 머지 완료(PR #18) + Issue #9 작업 진입 — `I-09` status:in-review 전이. PR #19 (feat/board-issue-9). feat(frontend) 5 + docs(plan) 1 = 6 커밋. Sprint 2 핵심 마일스톤 (effort 2d). 6 화면 실 동작 + 3 신규 컴포넌트(ArticleCard·CommentItem·Modal). P2 컷 후보 3종(ProfilePage·댓글 수정 UI·골든패스 압축) 모두 본 PR 채택 — 시간 박스 fit. 빌드 60 modules in 1.14s + CSS 10.91KB(+2.83KB I-08 대비). store/api/types 무수정. 골든패스 + FCP + XSS Manual verification 위임. 다음: I-10 회귀·PR 머지 |
 | v0.11 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #7 머지 완료(PR #17) + Issue #8 작업 진입 — `I-08` status:in-review 전이. PR #18 (feat/auth-ui-issue-8). feat(frontend) 4 + docs(plan) 1 = 5 커밋. Sprint 2 세 번째. types/api.ts ErrorBody + extractErrorMessage 헬퍼 / LoginPage·RegisterPage 실 폼 (controlled inputs + 422 catch + extractErrorMessage 인라인) / Header useAuthStore 구독 + logged-in·out 분기 / App.tsx mount useEffect loadFromStorage. store/auth.ts 무수정(I-07 시그니처). 검증: TS strict pass + Vite build 57 modules in 1.52s (CSS 8.08KB +1.76KB I-07 대비) + dev 608ms. backend pytest 77 passed 회귀 N/A. ui_changed=false (시각 디자인 변경 0, 기능 동작 추가만 — I-09 골든패스 시점에 스크린샷 검증 집중). 다음 진입: I-09 게시판 + 골든패스 |
 | v0.10 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #6 머지 완료(PR #16) + Issue #7 작업 진입 — `I-07` status:in-review 전이. PR #17 (feat/frontend-scaffold-issue-7). chore(frontend) 1 + feat(frontend) 1 + docs(plan) 1 = 3 커밋. Sprint 2 두 번째 이슈. **npm 채택**(pnpm 미설치 점진 합의 — feat-frontend-scaffold/contract §1 + plan §5). frontend 워크스페이스 신규: Vite 5.4 + React 18.3 + TypeScript 5.6 strict + Tailwind 3.4 + react-router-dom 6.28 + zustand 4.5. 6 페이지 placeholder(S-01~S-06) + Header + api/client.ts(fetch 래퍼) + store/auth.ts(zustand) + types/api.ts(6종). Vite proxy /api → :8000. 검증: npm install 140 packages + npm run build 41 modules in 1.38s + npm run dev ready in 346ms @ 5173. backend pytest 77 passed 회귀 N/A. 다음 진입: I-08 auth UI |
 | v0.9 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #5 머지 완료(PR #15) + Issue #6 작업 진입 — `I-06` status:in-review 전이. PR #16 (feat/comment-module-issue-6). docs(feat) 1 + feat(backend) 3 + (docs sync 1 예정) = 5 커밋. Sprint 2 첫 이슈. Comment 모델(article_id FK CASCADE + author lazy=joined) + Alembic 0004 + CommentRepo 4 메서드 + CommentService 4 메서드(ArticleService.get_by_slug 위임) + schemas(body min_length=1) + 4 라우트 nested(R-F-13 PUT 비표준 포함) + 단위 11 + 통합 12 + CASCADE 1건 통합 = 회귀 53→77 passed. lazy load + commit 충돌 해소 — CommentRepo.add·CommentService.update에서 refresh() 대신 get_by_id() fresh reload(I-04 ArticleService.update F2 동일 패턴). 다음 진입: I-07 frontend 스캐폴딩 |

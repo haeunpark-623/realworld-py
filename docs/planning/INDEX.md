@@ -1,6 +1,6 @@
 ---
 doc_type: index
-version: v0.12
+version: v0.13
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -10,12 +10,13 @@ related: { R-ID: [], F-ID: [], supersedes: null }
 
 # realworld-py — docs/planning Index
 
-> Phase 1~4/4 NEW_PROJECT 메타 모두 완료. mode=sprint 진입. Sprint 1 5/5 + Sprint 2 2/5 머지 완료 (PR #11~#17). Sprint 2 진행 중 — Issue #8 PR #18 머지 대기 (status:in-review). Backend 77 passed + Frontend 실 폼·Header 분기 도입.
+> Phase 1~4/4 NEW_PROJECT 메타 모두 완료. mode=sprint 진입. Sprint 1 5/5 + Sprint 2 3/5 머지 완료 (PR #11~#18). Sprint 2 핵심 마일스톤 진행 중 — Issue #9 PR #19 머지 대기 (status:in-review). 게시판 6 화면 + 댓글 UI + 골든패스 시도.
 
 ## 변경 이력
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.13 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #8 머지 완료(PR #18) + Issue #9 작업 진입 + PR #19 open (status:in-review). 14-wbs v0.12 (I-09 status:in-review). feat-board-ui 8 산출. **Sprint 2 핵심 마일스톤** — 6 화면 실 동작(HomePage 목록+페이지네이션+4 상태 / ArticlePage 본문+댓글 UI+작성자 액션+삭제 모달 / EditorPage 새 글+수정 / ProfilePage R-F-12) + 3 신규 컴포넌트(ArticleCard·CommentItem 인라인 편집 R-F-13·Modal). **P2 컷 후보 3종 모두 본 PR 채택** — 시간 박스 fit. 빌드 60 modules in 1.14s + CSS 10.91KB(+2.83KB I-08 대비). 골든패스 7단계 + FCP/XSS Manual verification. 다음: I-10 (Sprint 2 마지막 — /cso·README·CHANGELOG·/retro) |
 | v0.12 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #7 머지 완료 (PR #17) + Issue #8 작업 진입 + PR #18 open (status:in-review). 14-wbs v0.11 (I-08 status:in-review). feat-auth-ui 8 산출 + types/api.ts ErrorBody·extractErrorMessage + LoginPage·RegisterPage 실 폼(controlled inputs + 422 한글 에러 인라인) + Header logged-in/out 분기 + App.tsx mount loadFromStorage. store/auth.ts·api/client.ts 무수정(I-07 시그니처 그대로). build 57 modules in 1.52s + CSS 8.08KB(+1.76KB I-07 대비). ui_changed=false (시각 디자인 변경 0). 다음: I-09 게시판 |
 | v0.11 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #6 머지 완료 (PR #16) + Issue #7 작업 진입 + PR #17 open (status:in-review). 12-scaffolding v0.8 (§1 frontend 트리 npm 채택 + §5.2·§5.3 부팅 명령 npm 갱신 + §6 VITE_API_BASE_URL=/api proxy + §7 lockfile package-lock.json). LOCAL.md v0.3 (§1·§2·§3.1·§4·§5.7 pnpm→npm 갱신, frontend 실 검증 표기). 14-wbs v0.10 (I-07 status:in-review). feat-frontend-scaffold 8 산출 + Vite 5.4 + React 18.3 + TS 5.6 + Tailwind 3.4 + react-router-dom 6.28 + zustand 4.5 + 6 페이지 placeholder + Header + api/store/types placeholder. npm install 140 packages + build 41 modules in 1.38s + dev ready in 346ms @ 5173. 다음: I-08 auth UI |
 | v0.10 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 1 5/5 완료 (Issue #5 PR #15 머지) → Sprint 2 진입. Issue #6 작업 진입 + PR #16 open (status:in-review). 12-scaffolding v0.7 (§1 트리 models/comment + repositories/comment + services/comment + schemas/comment + routers/comments + alembic 0004 + tests 추가). 14-wbs v0.9 (I-06 status:in-review). feat-comment-module 8 산출 + Comment 모델(article_id FK CASCADE + author lazy=joined) + CommentService 4 메서드 + 4 라우트 nested (R-F-13 PUT 비표준 포함) + 단위 11 + 통합 12 + CASCADE 1 = 회귀 53→77 passed. CommentRepo.add·CommentService.update lazy load 충돌 해소 — get_by_id() fresh reload 패턴(I-04 F2 재사용) |
