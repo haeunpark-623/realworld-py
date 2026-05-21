@@ -1,9 +1,9 @@
 ---
 doc_type: wbs
-version: v0.5 (Draft)
+version: v0.6 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
-date: 2026-05-20
+date: 2026-05-21
 gate: operations
 related:
   R-ID: [R-F-01, R-F-02, R-F-03, R-F-04, R-F-05, R-F-06, R-F-07, R-F-08, R-F-09, R-F-10, R-F-11, R-F-12, R-F-13, R-N-01, R-N-02, R-N-03, R-N-04, R-N-05, R-N-06]
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.6 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #2 머지 완료(PR #12) + Issue #3 작업 진입 — `I-03` status:in-review 전이. PR #13 (feat/auth-service-issue-3). feat(backend) 3 + test(backend) 3 + chore(backend) 1 + docs(feat) 1 = 7 커밋. AuthService 3 메서드 + utils/security(bcrypt) + utils/jwt(python-jose HS256) + deps/auth(require_auth) + errors(6 도메인 예외) + 단위 테스트 14 PASS. FRISK-01 (passlib + bcrypt 4.x 호환) 실 발현 → bcrypt 직접 사용. 다음 진입: I-04 users router + articles router |
 | v0.5 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 완료(PR #11) + Issue #2 작업 진입 — `I-02` status:in-review 전이. PR #12 (feat/user-model-issue-2). feat(backend)+test(backend)+docs(feat) 6 커밋. User 모델·UserRepo 3 메서드·alembic 0002 add_users + 단위 테스트 3 PASS. 다음 진입: I-03 AuthService + bcrypt + JWT |
 | v0.4 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 — `I-01` status:in-review 전이. PR #11 (feat/bootstrap-backend-issue-1). docs(boot)+chore(backend) 8 커밋. 다음 진입: I-02 User 모델 + 마이그레이션 |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | §7 sprint-bootstrap YAML 정합 갱신 — milestone/due 키 추가, ADR-0021 title 형식(`<type>(<area>): <summary>`), priority:P0/P1 라벨 정합 |

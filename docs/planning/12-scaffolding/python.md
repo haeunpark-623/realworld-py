@@ -1,9 +1,9 @@
 ---
 doc_type: scaffolding
-version: v0.3 (Draft)
+version: v0.4 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
-date: 2026-05-20
+date: 2026-05-21
 gate: C
 related:
   R-ID: [R-F-01, R-F-02, R-F-04, R-F-06, R-N-01, R-N-04, R-N-06]
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.4 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #3 진입 — §1 트리에 `utils/{__init__,security,jwt}.py` + `services/{__init__,auth}.py` + `deps/{__init__,auth}.py` + `errors.py` 실제 도입 표기 + `tests/unit/test_{security,jwt,auth_service}.py` 추가. errors.py는 클래스 정의만 (handler 등록은 I-04) 명시 |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #2 머지 진입 — §1 트리에서 `tests/unit/test_user_repo.py` 명시 (현 PR 추가) + `models/base.py`·`models/user.py`·`repositories/user.py` 실제 도입 확인 (v0.1 트리에서 이미 명시). v0.4에서 후속 모델·repo 도입 시 갱신 |
 | v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 후 정합 갱신 — §1 트리에서 backend/ 하위로 `.env.example`·`data/`·`.gitignore`·`.python-version`·`.pre-commit-config.yaml` 위치 명시(루트 위치 placeholder 제거) / §6 DATABASE_URL 경로 명시 (backend cwd 기준) + JWT_ALG/JWT_EXPIRE_MINUTES 본 PR 채택 키명 반영 / §1 backend-ci.yml + 기존 워크플로 2건 추가 |
 | v0.1 | 2026-05-20 | woosung.ahn@bespinglobal.com | 초안 (`/flow-design` Phase 2/4, Python + FastAPI 백엔드 + frontend 큰 그림. ADR-0037 v1.1 단일 환경 운영 명시 / ADR-0040 LOCAL.md 양축) |
@@ -74,11 +75,11 @@ realworld-py/
 │   │   │   ├── article.py          # ArticleCreateSchema, ArticleUpdateSchema, ArticleResponse
 │   │   │   └── comment.py          # CommentCreateSchema, CommentUpdateSchema, CommentResponse
 │   │   ├── utils/
-│   │   │   ├── __init__.py
-│   │   │   ├── security.py         # bcrypt hash_password / verify_password
-│   │   │   ├── jwt.py              # encode / decode JWT
+│   │   │   ├── __init__.py            # (Issue #3)
+│   │   │   ├── security.py         # bcrypt hash_password / verify_password (Issue #3)
+│   │   │   ├── jwt.py              # encode / decode JWT (Issue #3)
 │   │   │   └── slug.py             # kebab-case + 숫자 suffix
-│   │   └── errors.py               # 도메인 예외 클래스 + exception_handlers 등록
+│   │   └── errors.py               # 도메인 예외 클래스 + exception_handlers 등록 (Issue #3 — 클래스 정의만 / handler 등록은 I-04)
 │   ├── scripts/
 │   │   └── seed_articles.py        # 게시글 100건 시드 (R-N-01 측정 준비)
 │   └── tests/
@@ -86,7 +87,9 @@ realworld-py/
 │       ├── conftest.py             # pytest fixture (DB, app, client, user factory)
 │       ├── unit/
 │       │   ├── test_user_repo.py     # UserRepo 3 메서드 (Issue #2)
-│       │   ├── test_auth_service.py
+│       │   ├── test_security.py      # bcrypt hash/verify 3 (Issue #3)
+│       │   ├── test_jwt.py           # encode/decode + 만료 + 변조 3 (Issue #3)
+│       │   ├── test_auth_service.py  # register 3 / authenticate 2 / get_current_user 3 (Issue #3)
 │       │   ├── test_article_service.py
 │       │   ├── test_comment_service.py
 │       │   ├── test_auth_middleware.py
