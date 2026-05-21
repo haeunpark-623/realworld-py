@@ -15,7 +15,7 @@ async def require_auth(
 ) -> User:
     if not authorization or not authorization.startswith(_TOKEN_PREFIX):
         raise InvalidToken()
-    token = authorization[len(_TOKEN_PREFIX):]
+    token = authorization[len(_TOKEN_PREFIX) :]
     if not token:
         raise InvalidToken()
     return await AuthService(session).get_current_user(token)
