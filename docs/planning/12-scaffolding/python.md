@@ -1,6 +1,6 @@
 ---
 doc_type: scaffolding
-version: v0.5 (Draft)
+version: v0.6 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.6 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #5 진입 — §1 트리에 `scripts/__init__.py` 명시 + `scripts/seed_articles.py` 실제 도입 표기 (멱등 seed: User 10 + Article 100 + Tag 5, random.seed(42) 고정) + `tests/integration/test_performance.py` 실제 도입 표기 (R-N-01 p95 < 200ms 측정 — 실측 p95=4.24ms PASS). pyproject.toml ruff per-file-ignores `scripts/** = [S105, S311]` 추가 (dev seed 공통 password + random.seed 재현성). 빌드·실행 §5 변경 0 (v0.5에서 seed 명령 이미 명시) |
 | v0.5 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #4 진입 — §1 트리에 `models/article.py`(Article + Tag + article_tags) + `repositories/article.py` + `services/article.py` + `utils/slug.py` + `schemas/{__init__,user,article}.py` + `routers/{__init__,users,articles}.py` 실제 도입 표기 + `alembic/versions/0003_articles_tags.py` + `tests/integration/{__init__,conftest,test_users_routes,test_articles_routes}.py` 추가. errors.py exception_handler `main.py`에 inline 등록 명시 (handler 모듈 분리 비목표) |
 | v0.4 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #3 진입 — §1 트리에 `utils/{__init__,security,jwt}.py` + `services/{__init__,auth}.py` + `deps/{__init__,auth}.py` + `errors.py` 실제 도입 표기 + `tests/unit/test_{security,jwt,auth_service}.py` 추가. errors.py는 클래스 정의만 (handler 등록은 I-04) 명시 |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #2 머지 진입 — §1 트리에서 `tests/unit/test_user_repo.py` 명시 (현 PR 추가) + `models/base.py`·`models/user.py`·`repositories/user.py` 실제 도입 확인 (v0.1 트리에서 이미 명시). v0.4에서 후속 모델·repo 도입 시 갱신 |
@@ -80,7 +81,8 @@ realworld-py/
 │   │   │   └── slug.py             # kebab-case + 숫자 suffix (Issue #4)
 │   │   └── errors.py               # 도메인 예외 클래스 + RealWorldError handler `main.py` inline 등록 (Issue #3 클래스 / Issue #4 handler. InvalidCredentials.status_code 422 — Issue #4 정합 갱신)
 │   ├── scripts/
-│   │   └── seed_articles.py        # 게시글 100건 시드 (R-N-01 측정 준비)
+│   │   ├── __init__.py             # (Issue #5)
+│   │   └── seed_articles.py        # 게시글 100건 + 사용자 10명 + 태그 5종 멱등 시드 (Issue #5, random.seed(42))
 │   └── tests/
 │       ├── __init__.py
 │       ├── conftest.py             # pytest fixture (DB, app, client, user factory)
