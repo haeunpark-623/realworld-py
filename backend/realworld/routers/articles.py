@@ -40,9 +40,7 @@ async def list_articles(
 ) -> ArticlesListResponse:
     service = ArticleService(session)
     articles, total = await service.list(limit=limit, offset=offset, author=author)
-    return ArticlesListResponse(
-        articles=[_to_view(a) for a in articles], articles_count=total
-    )
+    return ArticlesListResponse(articles=[_to_view(a) for a in articles], articles_count=total)
 
 
 @router.get("/{slug}", response_model=ArticleResponse, response_model_by_alias=True)
@@ -75,9 +73,7 @@ async def create_article(
     return ArticleResponse(article=_to_view(article))
 
 
-@router.put(
-    "/{slug}", response_model=ArticleResponse, response_model_by_alias=True
-)
+@router.put("/{slug}", response_model=ArticleResponse, response_model_by_alias=True)
 async def update_article(
     slug: str,
     payload: ArticleUpdateRequest,

@@ -16,9 +16,7 @@ class ArticleService:
     async def list(
         self, *, limit: int = 20, offset: int = 0, author: str | None = None
     ) -> tuple[list[Article], int]:
-        return await self._articles.list_with_filters(
-            limit=limit, offset=offset, author=author
-        )
+        return await self._articles.list_with_filters(limit=limit, offset=offset, author=author)
 
     async def get_by_slug(self, slug: str) -> Article:
         article = await self._articles.get_by_slug(slug)
@@ -67,9 +65,7 @@ class ArticleService:
         if body is not None:
             article.body = body
         if tag_list is not None:
-            article.tags = [
-                await self._articles.get_or_create_tag(name) for name in tag_list
-            ]
+            article.tags = [await self._articles.get_or_create_tag(name) for name in tag_list]
         await self._session.flush()
         await self._session.refresh(article, attribute_names=["author", "tags"])
         return article

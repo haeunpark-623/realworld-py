@@ -34,9 +34,7 @@ class ArticleRepo:
         return articles, int(total)
 
     async def get_by_slug(self, slug: str) -> Article | None:
-        stmt = (
-            select(Article).where(Article.slug == slug).options(selectinload(Article.tags))
-        )
+        stmt = select(Article).where(Article.slug == slug).options(selectinload(Article.tags))
         result = await self._session.execute(stmt)
         return result.scalars().unique().one_or_none()
 

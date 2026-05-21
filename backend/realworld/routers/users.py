@@ -43,9 +43,7 @@ async def register(
 
 
 @router.post("/users/login", response_model=UserResponse)
-async def login(
-    payload: UserLoginRequest, session: AsyncSession = Depends(get_db)
-) -> UserResponse:
+async def login(payload: UserLoginRequest, session: AsyncSession = Depends(get_db)) -> UserResponse:
     service = AuthService(session)
     try:
         token = await service.authenticate(payload.user.email, payload.user.password)
