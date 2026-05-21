@@ -1,6 +1,6 @@
 ---
 doc_type: scaffolding
-version: v0.4 (Draft)
+version: v0.5 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.5 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #4 진입 — §1 트리에 `models/article.py`(Article + Tag + article_tags) + `repositories/article.py` + `services/article.py` + `utils/slug.py` + `schemas/{__init__,user,article}.py` + `routers/{__init__,users,articles}.py` 실제 도입 표기 + `alembic/versions/0003_articles_tags.py` + `tests/integration/{__init__,conftest,test_users_routes,test_articles_routes}.py` 추가. errors.py exception_handler `main.py`에 inline 등록 명시 (handler 모듈 분리 비목표) |
 | v0.4 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #3 진입 — §1 트리에 `utils/{__init__,security,jwt}.py` + `services/{__init__,auth}.py` + `deps/{__init__,auth}.py` + `errors.py` 실제 도입 표기 + `tests/unit/test_{security,jwt,auth_service}.py` 추가. errors.py는 클래스 정의만 (handler 등록은 I-04) 명시 |
 | v0.3 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #2 머지 진입 — §1 트리에서 `tests/unit/test_user_repo.py` 명시 (현 PR 추가) + `models/base.py`·`models/user.py`·`repositories/user.py` 실제 도입 확인 (v0.1 트리에서 이미 명시). v0.4에서 후속 모델·repo 도입 시 갱신 |
 | v0.2 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 진입 후 정합 갱신 — §1 트리에서 backend/ 하위로 `.env.example`·`data/`·`.gitignore`·`.python-version`·`.pre-commit-config.yaml` 위치 명시(루트 위치 placeholder 제거) / §6 DATABASE_URL 경로 명시 (backend cwd 기준) + JWT_ALG/JWT_EXPIRE_MINUTES 본 PR 채택 키명 반영 / §1 backend-ci.yml + 기존 워크플로 2건 추가 |
@@ -44,42 +45,40 @@ realworld-py/
 │   │   ├── config.py               # pydantic-settings (Settings 클래스)
 │   │   ├── db.py                   # AsyncEngine·Session factory
 │   │   ├── deps/
-│   │   │   ├── __init__.py
-│   │   │   ├── auth.py             # require_auth, require_author (M-Auth-Middleware)
-│   │   │   └── db.py               # get_db() dependency
+│   │   │   ├── __init__.py         # (Issue #3)
+│   │   │   └── auth.py             # require_auth (Issue #3)
 │   │   ├── routers/
-│   │   │   ├── __init__.py
-│   │   │   ├── users.py            # POST /api/users · /login · GET /api/user
-│   │   │   ├── articles.py         # /api/articles 5개 라우트
-│   │   │   └── comments.py         # /api/articles/{slug}/comments 4개 라우트
+│   │   │   ├── __init__.py         # (Issue #4)
+│   │   │   ├── users.py            # POST /api/users · /login · GET /api/user (Issue #4)
+│   │   │   ├── articles.py         # /api/articles 5개 라우트 (Issue #4)
+│   │   │   └── comments.py         # /api/articles/{slug}/comments 4개 라우트 (Issue #5/#6)
 │   │   ├── services/
-│   │   │   ├── __init__.py
-│   │   │   ├── auth.py             # AuthService (M-Auth-Service)
-│   │   │   ├── article.py          # ArticleService (M-Article-Service)
-│   │   │   └── comment.py          # CommentService (M-Comment-Service)
+│   │   │   ├── __init__.py         # (Issue #3)
+│   │   │   ├── auth.py             # AuthService (Issue #3)
+│   │   │   ├── article.py          # ArticleService (Issue #4 — list/get_by_slug/create/update/delete + 작성자 검증)
+│   │   │   └── comment.py          # CommentService (Issue #5/#6)
 │   │   ├── repositories/
 │   │   │   ├── __init__.py
-│   │   │   ├── user.py
-│   │   │   ├── article.py
-│   │   │   └── comment.py
+│   │   │   ├── user.py             # UserRepo 4 메서드 (Issue #2 + find_by_id Issue #3)
+│   │   │   ├── article.py          # ArticleRepo 6 메서드 + selectinload N+1 회피 (Issue #4)
+│   │   │   └── comment.py          # (Issue #5/#6)
 │   │   ├── models/
-│   │   │   ├── __init__.py
-│   │   │   ├── base.py             # DeclarativeBase
-│   │   │   ├── user.py             # User 모델
-│   │   │   ├── article.py          # Article + Tag association
-│   │   │   ├── comment.py          # Comment 모델 (FK ondelete=CASCADE)
-│   │   │   └── tag.py              # Tag 모델
+│   │   │   ├── __init__.py         # User + Article + Tag + article_tags re-export (Issue #2·#4)
+│   │   │   ├── base.py             # DeclarativeBase (Issue #2)
+│   │   │   ├── user.py             # User 모델 (Issue #2)
+│   │   │   ├── article.py          # Article + Tag + article_tags M2M secondary (Issue #4)
+│   │   │   └── comment.py          # Comment 모델 (FK ondelete=CASCADE) (Issue #5/#6)
 │   │   ├── schemas/
-│   │   │   ├── __init__.py
-│   │   │   ├── user.py             # UserCreateSchema, UserResponse, UserLoginSchema
-│   │   │   ├── article.py          # ArticleCreateSchema, ArticleUpdateSchema, ArticleResponse
-│   │   │   └── comment.py          # CommentCreateSchema, CommentUpdateSchema, CommentResponse
+│   │   │   ├── __init__.py         # (Issue #4)
+│   │   │   ├── user.py             # UserCreateRequest, UserLoginRequest, UserResponse (Issue #4 — RealWorld 래핑)
+│   │   │   ├── article.py          # ArticleCreate/Update + View/Response + ListResponse + ProfileEmbed (Issue #4)
+│   │   │   └── comment.py          # (Issue #5/#6)
 │   │   ├── utils/
-│   │   │   ├── __init__.py            # (Issue #3)
+│   │   │   ├── __init__.py         # (Issue #3)
 │   │   │   ├── security.py         # bcrypt hash_password / verify_password (Issue #3)
 │   │   │   ├── jwt.py              # encode / decode JWT (Issue #3)
-│   │   │   └── slug.py             # kebab-case + 숫자 suffix
-│   │   └── errors.py               # 도메인 예외 클래스 + exception_handlers 등록 (Issue #3 — 클래스 정의만 / handler 등록은 I-04)
+│   │   │   └── slug.py             # kebab-case + 숫자 suffix (Issue #4)
+│   │   └── errors.py               # 도메인 예외 클래스 + RealWorldError handler `main.py` inline 등록 (Issue #3 클래스 / Issue #4 handler. InvalidCredentials.status_code 422 — Issue #4 정합 갱신)
 │   ├── scripts/
 │   │   └── seed_articles.py        # 게시글 100건 시드 (R-N-01 측정 준비)
 │   └── tests/
@@ -90,15 +89,17 @@ realworld-py/
 │       │   ├── test_security.py      # bcrypt hash/verify 3 (Issue #3)
 │       │   ├── test_jwt.py           # encode/decode + 만료 + 변조 3 (Issue #3)
 │       │   ├── test_auth_service.py  # register 3 / authenticate 2 / get_current_user 3 (Issue #3)
-│       │   ├── test_article_service.py
-│       │   ├── test_comment_service.py
-│       │   ├── test_auth_middleware.py
-│       │   └── test_slug.py
+│       │   ├── test_article_service.py  # 8 케이스 — create + slug 충돌 / list / get / update 본인·타인 / delete 본인·타인 (Issue #4)
+│       │   ├── test_comment_service.py  # (Issue #5/#6)
+│       │   ├── test_auth_middleware.py  # (require_auth 단위 검증 — DEFER, AuthService.get_current_user 8건이 cover)
+│       │   └── test_slug.py            # 5 케이스 — slugify 3 + unique_slug 2 (Issue #4)
 │       └── integration/
-│           ├── test_users_routes.py
-│           ├── test_articles_routes.py
-│           ├── test_comments_routes.py
-│           └── test_performance.py  # R-N-01 p95 측정
+│           ├── __init__.py             # (Issue #4)
+│           ├── conftest.py             # AsyncClient + dependency_overrides[get_db] in-memory aiosqlite + register_user 헬퍼 (Issue #4)
+│           ├── test_users_routes.py    # 7 케이스 — register happy/422 dup/422 short + login happy/422 invalid + GET /user happy/401 (Issue #4)
+│           ├── test_articles_routes.py # 12 케이스 — list happy/?author= 필터/unknown 빈/detail happy/404/POST happy+401+slug 충돌 -2/PUT happy+403/DELETE 204+follow-up 404+403 (Issue #4)
+│           ├── test_comments_routes.py # (Issue #5/#6)
+│           └── test_performance.py     # R-N-01 p95 측정 (Issue #5)
 ├── frontend/
 │   ├── package.json
 │   ├── pnpm-lock.yaml              # FE lockfile (pnpm 가정)
