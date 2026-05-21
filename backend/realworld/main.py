@@ -1,11 +1,15 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from realworld import __version__
 from realworld.config import get_settings
 from realworld.db import engine
+from realworld.errors import RealWorldError
+from realworld.routers import articles as articles_router
+from realworld.routers import users as users_router
 
 
 @asynccontextmanager
@@ -36,6 +40,16 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["meta"])
     async def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    @app.exception_handler(RealWorldError)
+    async def realworld_error_handler(request: Request, exc: RealWorldError) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"errors": {"body": [exc.message]}},
+        )
+
+    app.include_router(users_router.router)
+    app.include_router(articles_router.router)
 
     return app
 
