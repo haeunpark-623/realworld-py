@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Header from "./components/Header";
@@ -7,8 +8,13 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
+import { useAuthStore } from "./store/auth";
 
 export default function App() {
+  useEffect(() => {
+    useAuthStore.getState().loadFromStorage();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <Header />
