@@ -1,12 +1,12 @@
 ---
 doc_type: scaffolding
-version: v0.6 (Draft)
+version: v0.7 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
 gate: C
 related:
-  R-ID: [R-F-01, R-F-02, R-F-04, R-F-06, R-N-01, R-N-04, R-N-06]
+  R-ID: [R-F-01, R-F-02, R-F-04, R-F-06, R-F-08, R-F-09, R-F-10, R-F-11, R-F-13, R-N-01, R-N-04, R-N-06]
   F-ID: [F-01, F-02, F-03, F-04]
   supersedes: null
 ---
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.7 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #6 진입 — §1 트리에 `models/comment.py`(article_id FK CASCADE + author lazy=joined) + `repositories/comment.py`(4 메서드 + selectinload author) + `services/comment.py`(4 메서드 + ArticleService.get_by_slug 위임) + `schemas/comment.py`(body min_length=1, ProfileEmbed 재사용) + `routers/comments.py`(4 라우트 nested, R-F-13 PUT 비표준 포함) 실제 도입 표기 + `alembic/versions/0004_comments.py` + `tests/unit/test_comment_service.py` 11건 + `tests/integration/test_comments_routes.py` 12건 + `tests/integration/test_articles_routes.py::test_delete_cascades_comments` 1건 추가. main.py comments_router include 1줄. 회귀: 53 → 77 passed |
 | v0.6 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #5 진입 — §1 트리에 `scripts/__init__.py` 명시 + `scripts/seed_articles.py` 실제 도입 표기 (멱등 seed: User 10 + Article 100 + Tag 5, random.seed(42) 고정) + `tests/integration/test_performance.py` 실제 도입 표기 (R-N-01 p95 < 200ms 측정 — 실측 p95=4.24ms PASS). pyproject.toml ruff per-file-ignores `scripts/** = [S105, S311]` 추가 (dev seed 공통 password + random.seed 재현성). 빌드·실행 §5 변경 0 (v0.5에서 seed 명령 이미 명시) |
 | v0.5 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #4 진입 — §1 트리에 `models/article.py`(Article + Tag + article_tags) + `repositories/article.py` + `services/article.py` + `utils/slug.py` + `schemas/{__init__,user,article}.py` + `routers/{__init__,users,articles}.py` 실제 도입 표기 + `alembic/versions/0003_articles_tags.py` + `tests/integration/{__init__,conftest,test_users_routes,test_articles_routes}.py` 추가. errors.py exception_handler `main.py`에 inline 등록 명시 (handler 모듈 분리 비목표) |
 | v0.4 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #3 진입 — §1 트리에 `utils/{__init__,security,jwt}.py` + `services/{__init__,auth}.py` + `deps/{__init__,auth}.py` + `errors.py` 실제 도입 표기 + `tests/unit/test_{security,jwt,auth_service}.py` 추가. errors.py는 클래스 정의만 (handler 등록은 I-04) 명시 |
@@ -52,28 +53,28 @@ realworld-py/
 │   │   │   ├── __init__.py         # (Issue #4)
 │   │   │   ├── users.py            # POST /api/users · /login · GET /api/user (Issue #4)
 │   │   │   ├── articles.py         # /api/articles 5개 라우트 (Issue #4)
-│   │   │   └── comments.py         # /api/articles/{slug}/comments 4개 라우트 (Issue #5/#6)
+│   │   │   └── comments.py         # /api/articles/{slug}/comments 4개 라우트 (Issue #6 — R-F-13 PUT 비표준 포함)
 │   │   ├── services/
 │   │   │   ├── __init__.py         # (Issue #3)
 │   │   │   ├── auth.py             # AuthService (Issue #3)
 │   │   │   ├── article.py          # ArticleService (Issue #4 — list/get_by_slug/create/update/delete + 작성자 검증)
-│   │   │   └── comment.py          # CommentService (Issue #5/#6)
+│   │   │   └── comment.py          # CommentService (Issue #6 — create/list_by_article/update/delete + ArticleService.get_by_slug 위임)
 │   │   ├── repositories/
 │   │   │   ├── __init__.py
 │   │   │   ├── user.py             # UserRepo 4 메서드 (Issue #2 + find_by_id Issue #3)
 │   │   │   ├── article.py          # ArticleRepo 6 메서드 + selectinload N+1 회피 (Issue #4)
-│   │   │   └── comment.py          # (Issue #5/#6)
+│   │   │   └── comment.py          # CommentRepo 4 메서드 + selectinload(Comment.author) (Issue #6)
 │   │   ├── models/
-│   │   │   ├── __init__.py         # User + Article + Tag + article_tags re-export (Issue #2·#4)
+│   │   │   ├── __init__.py         # User + Article + Tag + Comment + article_tags re-export (Issue #2·#4·#6)
 │   │   │   ├── base.py             # DeclarativeBase (Issue #2)
 │   │   │   ├── user.py             # User 모델 (Issue #2)
 │   │   │   ├── article.py          # Article + Tag + article_tags M2M secondary (Issue #4)
-│   │   │   └── comment.py          # Comment 모델 (FK ondelete=CASCADE) (Issue #5/#6)
+│   │   │   └── comment.py          # Comment 모델 (article_id FK ondelete=CASCADE + author lazy=joined) (Issue #6)
 │   │   ├── schemas/
 │   │   │   ├── __init__.py         # (Issue #4)
 │   │   │   ├── user.py             # UserCreateRequest, UserLoginRequest, UserResponse (Issue #4 — RealWorld 래핑)
 │   │   │   ├── article.py          # ArticleCreate/Update + View/Response + ListResponse + ProfileEmbed (Issue #4)
-│   │   │   └── comment.py          # (Issue #5/#6)
+│   │   │   └── comment.py          # CommentCreate/Update Payload·Request + View/Response/ListResponse (body min_length=1, ProfileEmbed 재사용) (Issue #6)
 │   │   ├── utils/
 │   │   │   ├── __init__.py         # (Issue #3)
 │   │   │   ├── security.py         # bcrypt hash_password / verify_password (Issue #3)
@@ -92,15 +93,15 @@ realworld-py/
 │       │   ├── test_jwt.py           # encode/decode + 만료 + 변조 3 (Issue #3)
 │       │   ├── test_auth_service.py  # register 3 / authenticate 2 / get_current_user 3 (Issue #3)
 │       │   ├── test_article_service.py  # 8 케이스 — create + slug 충돌 / list / get / update 본인·타인 / delete 본인·타인 (Issue #4)
-│       │   ├── test_comment_service.py  # (Issue #5/#6)
+│       │   ├── test_comment_service.py  # 11 케이스 — create happy/404 article / list happy/404 article/빈 / update happy/403/404 / delete happy/403/404 (Issue #6)
 │       │   ├── test_auth_middleware.py  # (require_auth 단위 검증 — DEFER, AuthService.get_current_user 8건이 cover)
 │       │   └── test_slug.py            # 5 케이스 — slugify 3 + unique_slug 2 (Issue #4)
 │       └── integration/
 │           ├── __init__.py             # (Issue #4)
 │           ├── conftest.py             # AsyncClient + dependency_overrides[get_db] in-memory aiosqlite + register_user 헬퍼 (Issue #4)
 │           ├── test_users_routes.py    # 7 케이스 — register happy/422 dup/422 short + login happy/422 invalid + GET /user happy/401 (Issue #4)
-│           ├── test_articles_routes.py # 12 케이스 — list happy/?author= 필터/unknown 빈/detail happy/404/POST happy+401+slug 충돌 -2/PUT happy+403/DELETE 204+follow-up 404+403 (Issue #4)
-│           ├── test_comments_routes.py # (Issue #5/#6)
+│           ├── test_articles_routes.py # 13 케이스 — Issue #4 12건 + test_delete_cascades_comments 1건 (Issue #6, R-F-08 CASCADE 검증)
+│           ├── test_comments_routes.py # 12 케이스 — 4 라우트 × happy/failure (401/403/404/422) (Issue #6)
 │           └── test_performance.py     # R-N-01 p95 측정 (Issue #5)
 ├── frontend/
 │   ├── package.json
