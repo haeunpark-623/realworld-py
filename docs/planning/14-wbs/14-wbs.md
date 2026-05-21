@@ -1,6 +1,6 @@
 ---
 doc_type: wbs
-version: v0.9 (Draft)
+version: v0.10 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.10 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #6 머지 완료(PR #16) + Issue #7 작업 진입 — `I-07` status:in-review 전이. PR #17 (feat/frontend-scaffold-issue-7). chore(frontend) 1 + feat(frontend) 1 + docs(plan) 1 = 3 커밋. Sprint 2 두 번째 이슈. **npm 채택**(pnpm 미설치 점진 합의 — feat-frontend-scaffold/contract §1 + plan §5). frontend 워크스페이스 신규: Vite 5.4 + React 18.3 + TypeScript 5.6 strict + Tailwind 3.4 + react-router-dom 6.28 + zustand 4.5. 6 페이지 placeholder(S-01~S-06) + Header + api/client.ts(fetch 래퍼) + store/auth.ts(zustand) + types/api.ts(6종). Vite proxy /api → :8000. 검증: npm install 140 packages + npm run build 41 modules in 1.38s + npm run dev ready in 346ms @ 5173. backend pytest 77 passed 회귀 N/A. 다음 진입: I-08 auth UI |
 | v0.9 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #5 머지 완료(PR #15) + Issue #6 작업 진입 — `I-06` status:in-review 전이. PR #16 (feat/comment-module-issue-6). docs(feat) 1 + feat(backend) 3 + (docs sync 1 예정) = 5 커밋. Sprint 2 첫 이슈. Comment 모델(article_id FK CASCADE + author lazy=joined) + Alembic 0004 + CommentRepo 4 메서드 + CommentService 4 메서드(ArticleService.get_by_slug 위임) + schemas(body min_length=1) + 4 라우트 nested(R-F-13 PUT 비표준 포함) + 단위 11 + 통합 12 + CASCADE 1건 통합 = 회귀 53→77 passed. lazy load + commit 충돌 해소 — CommentRepo.add·CommentService.update에서 refresh() 대신 get_by_id() fresh reload(I-04 ArticleService.update F2 동일 패턴). 다음 진입: I-07 frontend 스캐폴딩 |
 | v0.8 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #4 머지 완료(PR #14) + Issue #5 작업 진입 — `I-05` status:in-review 전이. PR #15 (feat/seed-performance-issue-5). docs(feat) 1 + feat(backend) 1 + test(backend) 1 + (docs sync 1 예정) = 3+1 커밋. `scripts/seed_articles.py` 멱등 시드 (User 10 + Article 100 + Tag 5, DELETE 전부 후 INSERT, random.seed(42)) + `tests/integration/test_performance.py::test_articles_list_p95` (100 호출 warmup 10 + 측정 90 statistics.quantiles[18]). **R-N-01 측정 PASS — p50=3.28ms p95=4.24ms (threshold 200ms, 마진 ~47배)**. selectinload N+1 회피(I-04) 효과 정량 입증. 회귀: pytest 53 passed (52 + 1). pyproject.toml ruff per-file-ignores `scripts/** = [S105, S311]` 추가. P2 컷 후보 컷 없이 정상 진행. RISK-07(성능 미달) 완화 상태 `미측정` → `측정 PASS` 격상 가능. Sprint 1 완료(이슈 5/5) — Sprint 2 진입 |
 | v0.7 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #3 머지 완료(PR #13) + Issue #4 작업 진입 — `I-04` status:in-review 전이. PR #14 (feat/users-articles-issue-4). feat(backend) 5 + test(backend) 3 + fix(backend) 2 + chore(backend) 1 + docs(feat) 1 = 12 커밋. Article + Tag M2M 모델 + alembic 0003 + ArticleRepo selectinload + ArticleService 5 메서드 + utils/slug + Pydantic schemas + 8 라우트(users 3 + articles 5) + main.py 라우터 등록 + RealWorldError handler inline + 단위 13 + 통합 19 = 52 passed. errors.InvalidCredentials.status_code 401→422 정합 갱신 (9-api-spec 정합, code-review F1). ArticleService.update refresh→get_by_slug reload 인라인 결정 (selectin lazy 회귀 회피, F2). 다음 진입: I-05 seed + p95 측정 |
