@@ -1,6 +1,6 @@
 ---
 doc_type: wbs
-version: v0.7 (Draft)
+version: v0.8 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.8 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #4 머지 완료(PR #14) + Issue #5 작업 진입 — `I-05` status:in-review 전이. PR #15 (feat/seed-performance-issue-5). docs(feat) 1 + feat(backend) 1 + test(backend) 1 + (docs sync 1 예정) = 3+1 커밋. `scripts/seed_articles.py` 멱등 시드 (User 10 + Article 100 + Tag 5, DELETE 전부 후 INSERT, random.seed(42)) + `tests/integration/test_performance.py::test_articles_list_p95` (100 호출 warmup 10 + 측정 90 statistics.quantiles[18]). **R-N-01 측정 PASS — p50=3.28ms p95=4.24ms (threshold 200ms, 마진 ~47배)**. selectinload N+1 회피(I-04) 효과 정량 입증. 회귀: pytest 53 passed (52 + 1). pyproject.toml ruff per-file-ignores `scripts/** = [S105, S311]` 추가. P2 컷 후보 컷 없이 정상 진행. RISK-07(성능 미달) 완화 상태 `미측정` → `측정 PASS` 격상 가능. Sprint 1 완료(이슈 5/5) — Sprint 2 진입 |
 | v0.7 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #3 머지 완료(PR #13) + Issue #4 작업 진입 — `I-04` status:in-review 전이. PR #14 (feat/users-articles-issue-4). feat(backend) 5 + test(backend) 3 + fix(backend) 2 + chore(backend) 1 + docs(feat) 1 = 12 커밋. Article + Tag M2M 모델 + alembic 0003 + ArticleRepo selectinload + ArticleService 5 메서드 + utils/slug + Pydantic schemas + 8 라우트(users 3 + articles 5) + main.py 라우터 등록 + RealWorldError handler inline + 단위 13 + 통합 19 = 52 passed. errors.InvalidCredentials.status_code 401→422 정합 갱신 (9-api-spec 정합, code-review F1). ArticleService.update refresh→get_by_slug reload 인라인 결정 (selectin lazy 회귀 회피, F2). 다음 진입: I-05 seed + p95 측정 |
 | v0.6 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #2 머지 완료(PR #12) + Issue #3 작업 진입 — `I-03` status:in-review 전이. PR #13 (feat/auth-service-issue-3). feat(backend) 3 + test(backend) 3 + chore(backend) 1 + docs(feat) 1 = 7 커밋. AuthService 3 메서드 + utils/security(bcrypt) + utils/jwt(python-jose HS256) + deps/auth(require_auth) + errors(6 도메인 예외) + 단위 테스트 14 PASS. FRISK-01 (passlib + bcrypt 4.x 호환) 실 발현 → bcrypt 직접 사용. 다음 진입: I-04 users router + articles router |
 | v0.5 | 2026-05-20 | woosung.ahn@bespinglobal.com | Issue #1 머지 완료(PR #11) + Issue #2 작업 진입 — `I-02` status:in-review 전이. PR #12 (feat/user-model-issue-2). feat(backend)+test(backend)+docs(feat) 6 커밋. User 모델·UserRepo 3 메서드·alembic 0002 add_users + 단위 테스트 3 PASS. 다음 진입: I-03 AuthService + bcrypt + JWT |
