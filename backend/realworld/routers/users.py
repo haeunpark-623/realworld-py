@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from realworld.db import get_db
 from realworld.deps.auth import require_auth
-from realworld.errors import InvalidCredentials
 from realworld.models.user import User
 from realworld.schemas.user import (
     UserCreateRequest,
@@ -45,13 +44,7 @@ async def register(
 @router.post("/users/login", response_model=UserResponse)
 async def login(payload: UserLoginRequest, session: AsyncSession = Depends(get_db)) -> UserResponse:
     service = AuthService(session)
-    try:
-        token = await service.authenticate(payload.user.email, payload.user.password)
-    except InvalidCredentials as exc:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"errors": {"body": [exc.message]}},
-        ) from exc
+    token = await service.authenticate(payload.user.email, payload.user.password)
     user = await service.get_current_user(token)
     return UserResponse(user=_to_view(user, token))
 

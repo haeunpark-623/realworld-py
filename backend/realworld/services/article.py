@@ -67,8 +67,10 @@ class ArticleService:
         if tag_list is not None:
             article.tags = [await self._articles.get_or_create_tag(name) for name in tag_list]
         await self._session.flush()
-        await self._session.refresh(article, attribute_names=["author", "tags"])
-        return article
+        reloaded = await self._articles.get_by_slug(article.slug)
+        if reloaded is None:
+            raise NotFound("게시글을 찾을 수 없습니다")
+        return reloaded
 
     async def delete(self, *, slug: str, author_id: int) -> None:
         article = await self.get_by_slug(slug)

@@ -19,7 +19,7 @@ class DuplicateUsername(RealWorldError):
 
 
 class InvalidCredentials(RealWorldError):
-    status_code = 401
+    status_code = 422
     message = "이메일 또는 비밀번호가 올바르지 않습니다"
 
 
