@@ -1,12 +1,12 @@
 ---
 doc_type: scaffolding
-version: v0.7 (Draft)
+version: v0.8 (Draft)
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
 gate: C
 related:
-  R-ID: [R-F-01, R-F-02, R-F-04, R-F-06, R-F-08, R-F-09, R-F-10, R-F-11, R-F-13, R-N-01, R-N-04, R-N-06]
+  R-ID: [R-F-01, R-F-02, R-F-04, R-F-06, R-F-08, R-F-09, R-F-10, R-F-11, R-F-13, R-N-01, R-N-02, R-N-04, R-N-06]
   F-ID: [F-01, F-02, F-03, F-04]
   supersedes: null
 ---
@@ -17,6 +17,7 @@ related:
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.8 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #7 진입 — frontend 워크스페이스 신규 도입. **npm 채택**(pnpm 미설치, 점진 합의 결정 — feat-frontend-scaffold/contract §1 + plan §5 trace). §1 트리에서 `pnpm-lock.yaml` → `package-lock.json`로 변경, `src/api/client.ts` + `src/store/auth.ts` + `src/types/api.ts` 실제 도입 표기, `src/components/{ArticleCard,CommentItem,Button,Input,Modal}.tsx`는 미도입(I-08·I-09 예정) 명시. §5.2 frontend 부팅 명령 `pnpm` → `npm` 갱신. §5.3 전체 동시 부팅 정합. §6 `VITE_API_BASE_URL=/api`(vite proxy 사용)로 갱신. §7 부팅 자산 lockfile 항목 `pnpm-lock.yaml` → `package-lock.json`. §8 styling 솔루션 Tailwind 3 채택 명시 (3 directive + content scan + index.css import). 회귀: backend pytest 77 passed 무영향 |
 | v0.7 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #6 진입 — §1 트리에 `models/comment.py`(article_id FK CASCADE + author lazy=joined) + `repositories/comment.py`(4 메서드 + selectinload author) + `services/comment.py`(4 메서드 + ArticleService.get_by_slug 위임) + `schemas/comment.py`(body min_length=1, ProfileEmbed 재사용) + `routers/comments.py`(4 라우트 nested, R-F-13 PUT 비표준 포함) 실제 도입 표기 + `alembic/versions/0004_comments.py` + `tests/unit/test_comment_service.py` 11건 + `tests/integration/test_comments_routes.py` 12건 + `tests/integration/test_articles_routes.py::test_delete_cascades_comments` 1건 추가. main.py comments_router include 1줄. 회귀: 53 → 77 passed |
 | v0.6 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #5 진입 — §1 트리에 `scripts/__init__.py` 명시 + `scripts/seed_articles.py` 실제 도입 표기 (멱등 seed: User 10 + Article 100 + Tag 5, random.seed(42) 고정) + `tests/integration/test_performance.py` 실제 도입 표기 (R-N-01 p95 < 200ms 측정 — 실측 p95=4.24ms PASS). pyproject.toml ruff per-file-ignores `scripts/** = [S105, S311]` 추가 (dev seed 공통 password + random.seed 재현성). 빌드·실행 §5 변경 0 (v0.5에서 seed 명령 이미 명시) |
 | v0.5 | 2026-05-21 | woosung.ahn@bespinglobal.com | Issue #4 진입 — §1 트리에 `models/article.py`(Article + Tag + article_tags) + `repositories/article.py` + `services/article.py` + `utils/slug.py` + `schemas/{__init__,user,article}.py` + `routers/{__init__,users,articles}.py` 실제 도입 표기 + `alembic/versions/0003_articles_tags.py` + `tests/integration/{__init__,conftest,test_users_routes,test_articles_routes}.py` 추가. errors.py exception_handler `main.py`에 inline 등록 명시 (handler 모듈 분리 비목표) |
@@ -103,38 +104,41 @@ realworld-py/
 │           ├── test_articles_routes.py # 13 케이스 — Issue #4 12건 + test_delete_cascades_comments 1건 (Issue #6, R-F-08 CASCADE 검증)
 │           ├── test_comments_routes.py # 12 케이스 — 4 라우트 × happy/failure (401/403/404/422) (Issue #6)
 │           └── test_performance.py     # R-N-01 p95 측정 (Issue #5)
-├── frontend/
-│   ├── package.json
-│   ├── pnpm-lock.yaml              # FE lockfile (pnpm 가정)
-│   ├── vite.config.ts
-│   ├── tailwind.config.js          # Tailwind CSS 설정
-│   ├── postcss.config.js
-│   ├── tsconfig.json
-│   ├── index.html
+├── frontend/                       # Issue #7 — Vite + React + TS + Tailwind 워크스페이스
+│   ├── package.json                # npm 채택 (pnpm 미설치 점진 합의, Issue #7)
+│   ├── package-lock.json           # FE lockfile (npm — pnpm-lock.yaml 대체, Issue #7)
+│   ├── vite.config.ts              # proxy /api → http://localhost:8000 (Issue #7)
+│   ├── tailwind.config.js          # Tailwind 3 content scan src/**/*.{ts,tsx} (Issue #7)
+│   ├── postcss.config.js           # tailwindcss + autoprefixer (Issue #7)
+│   ├── tsconfig.json + tsconfig.node.json   # strict + ES2022 + JSX react-jsx (Issue #7)
+│   ├── index.html                  # Vite 진입점 + <div id="root"> (Issue #7)
+│   ├── .env.example                # VITE_API_BASE_URL=/api (Issue #7)
+│   ├── .gitignore                  # node_modules + dist + .env (Issue #7)
 │   └── src/
-│       ├── main.tsx                # React 진입점 (stylesheet import)
-│       ├── App.tsx                 # 라우터 (S-01~S-06)
-│       ├── index.css               # Tailwind directives (@tailwind base/components/utilities)
+│       ├── main.tsx                # StrictMode + BrowserRouter + import './index.css' (Issue #7)
+│       ├── App.tsx                 # 7 Routes (S-01~S-06 + /editor/:slug) (Issue #7)
+│       ├── index.css               # Tailwind 3 directive (@tailwind base/components/utilities) (Issue #7)
+│       ├── vite-env.d.ts           # Vite 타입 + ImportMetaEnv (Issue #7)
 │       ├── api/
-│       │   └── client.ts           # M-FE-ApiClient (fetch 래퍼)
+│       │   └── client.ts           # M-FE-ApiClient (apiFetch + ApiError, Issue #7)
 │       ├── store/
-│       │   └── auth.ts             # M-FE-AuthStore (zustand)
-│       ├── pages/                  # M-FE-Pages
-│       │   ├── HomePage.tsx        # S-01
-│       │   ├── ArticlePage.tsx     # S-02
-│       │   ├── EditorPage.tsx      # S-03
-│       │   ├── LoginPage.tsx       # S-04
-│       │   ├── RegisterPage.tsx    # S-05
-│       │   └── ProfilePage.tsx     # S-06
+│       │   └── auth.ts             # M-FE-AuthStore (zustand + localStorage 'realworld.token'/'realworld.user', Issue #7)
+│       ├── pages/                  # M-FE-Pages — 6 placeholder (Issue #7), 실 구현은 I-08·I-09
+│       │   ├── HomePage.tsx        # S-01 placeholder
+│       │   ├── ArticlePage.tsx     # S-02 placeholder
+│       │   ├── EditorPage.tsx     # S-03 placeholder
+│       │   ├── LoginPage.tsx       # S-04 placeholder
+│       │   ├── RegisterPage.tsx    # S-05 placeholder
+│       │   └── ProfilePage.tsx     # S-06 placeholder
 │       ├── components/             # M-FE-Components
-│       │   ├── Header.tsx
-│       │   ├── ArticleCard.tsx
-│       │   ├── CommentItem.tsx
-│       │   ├── Button.tsx
-│       │   ├── Input.tsx
-│       │   └── Modal.tsx
+│       │   ├── Header.tsx          # 로고 + 4 메뉴 placeholder (Issue #7)
+│       │   ├── ArticleCard.tsx     # (I-09 예정)
+│       │   ├── CommentItem.tsx     # (I-09 예정)
+│       │   ├── Button.tsx          # (I-08·I-09 예정 또는 직접 Tailwind utility)
+│       │   ├── Input.tsx           # (I-08 예정)
+│       │   └── Modal.tsx           # (I-09 예정)
 │       └── types/
-│           └── api.ts              # RealWorld spec 응답 타입
+│           └── api.ts              # RealWorld spec 응답 타입 6종 (Issue #7)
 ├── .gitignore
 ├── .pre-commit-config.yaml          # ruff + 일반 6 훅 (Issue #1 채택)
 ├── .github/
@@ -216,22 +220,23 @@ uv run ruff format --check .
 uv run black --check .
 ```
 
-### 5.2 프론트엔드 (React + Vite + pnpm)
+### 5.2 프론트엔드 (React + Vite + npm)
+
+> **npm 채택** (Issue #7 점진 합의): pnpm 미설치 환경 제약으로 npm 11.x 사용. lockfile은 `package-lock.json`.
 
 ```bash
 # 의존성 설치 (lockfile 기반)
 cd frontend
-pnpm install --frozen-lockfile
+npm install            # 최초 1회 (또는 npm ci로 lockfile 엄격 매칭)
 
-# 개발 서버 부팅 (포트 5173, hot reload)
-pnpm dev
+# 개발 서버 부팅 (포트 5173, hot reload, /api → :8000 proxy)
+npm run dev
 
-# 타입 체크 + 린트
-pnpm tsc --noEmit
-pnpm eslint .
+# 타입 체크 (build 안에 tsc -b 포함)
+npm run build         # tsc -b + vite build, dist/ 산출
 
-# 프로덕션 빌드 (학습 컨텍스트에선 선택, 부팅 검증용)
-pnpm build
+# 프로덕션 미리보기 (학습 컨텍스트 선택)
+npm run preview
 ```
 
 ### 5.3 전체 동시 부팅 (LOCAL.md §3과 동기)
@@ -241,7 +246,7 @@ pnpm build
 cd backend && uv sync && uv run alembic upgrade head && uv run uvicorn realworld.main:app --reload --port 8000
 
 # 터미널 2
-cd frontend && pnpm install --frozen-lockfile && pnpm dev
+cd frontend && npm install && npm run dev
 
 # 브라우저: http://localhost:5173
 # Vite dev server는 /api/* 요청을 http://localhost:8000으로 proxy (vite.config.ts)
@@ -259,7 +264,7 @@ cd frontend && pnpm install --frozen-lockfile && pnpm dev
 | `JWT_EXPIRE_MINUTES` | `10080` (7일 = 60*24*7) | N/A | N/A | `backend/.env.example`, `Settings` |
 | `CORS_ORIGINS` | `http://localhost:5173` | N/A | N/A | `backend/.env.example`, FastAPI 앱 init |
 | `LOG_LEVEL` | `INFO` | N/A | N/A | `backend/.env.example`, stdlib logging |
-| `VITE_API_BASE_URL` | `http://localhost:8000/api` | N/A | N/A | `frontend/.env.example` (vite는 `VITE_` prefix만 클라이언트 노출) |
+| `VITE_API_BASE_URL` | `/api` (Vite proxy를 통해 :8000으로 자동 forward, Issue #7) | N/A | N/A | `frontend/.env.example` (vite는 `VITE_` prefix만 클라이언트 노출) |
 
 **보안 절대 규칙 (CLAUDE.md)**: `.env` 파일은 .gitignore 강제. `JWT_SECRET` 등 실제 값은 코드·로그·커밋 메시지·PR 본문 어디에도 평문 포함 금지. `.env.example` placeholder 형식 — `JWT_SECRET=<your-random-secret-here>`.
 
@@ -272,9 +277,9 @@ cd frontend && pnpm install --frozen-lockfile && pnpm dev
 | 환경 변수 템플릿 | `.env.example` (dev) + `frontend/.env.example` / stg·prod N/A — 단일 환경 운영 | 새 환경변수 추가, 형식 변경 | 작성자(이슈 PR), AI 게이트 6번째 축 검증 |
 | 스키마 적용 (dev iteration) | `alembic upgrade head` (`backend/alembic/versions/` 사용) | 모델 변경 → migration 신규 작성 | 작성자(이슈 PR) |
 | DB migrations (stg/prod release) | `backend/alembic/versions/` (단일 환경 운영이라 dev iteration과 동일 디렉토리·동일 명령. N/A — dev 공유) | 모델 변경 | 작성자(이슈 PR) |
-| lockfile | `backend/uv.lock` + `frontend/pnpm-lock.yaml` | 의존성 추가·버전 변경 | 작성자(이슈 PR), 같은 커밋에 포함 |
+| lockfile | `backend/uv.lock` + `frontend/package-lock.json` (npm 채택, Issue #7) | 의존성 추가·버전 변경 | 작성자(이슈 PR), 같은 커밋에 포함 |
 | 설치/seed scripts | `backend/scripts/seed_articles.py` (게시글 100건) | seed 데이터 형식 변경, R-N-01 측정 시드 갱신 | 작성자(이슈 PR) |
-| 부팅 명령 | dev: `uv run uvicorn realworld.main:app --reload --port 8000` + `pnpm dev` / stg·prod: N/A — 단일 환경 운영 | 부팅 절차 변경 (포트·옵션·proxy 등) | 작성자(이슈 PR), §5 본문도 동시 갱신 |
+| 부팅 명령 | dev: `uv run uvicorn realworld.main:app --reload --port 8000` + `npm run dev` (Issue #7) / stg·prod: N/A — 단일 환경 운영 | 부팅 절차 변경 (포트·옵션·proxy 등) | 작성자(이슈 PR), §5 본문도 동시 갱신 |
 | LOCAL.md | 루트 `LOCAL.md` (사용자 가이드, ADR-0040) | 위 자산 중 하나라도 변경 시 동시 갱신 | 작성자(이슈 PR), 같은 PR에 포함 |
 
 ## 8. 스타일링 솔루션
