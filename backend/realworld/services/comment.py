@@ -29,8 +29,10 @@ class CommentService:
             raise Forbidden()
         comment.body = body
         await self._session.flush()
-        await self._session.refresh(comment, attribute_names=["author"])
-        return comment
+        reloaded = await self._comments.get_by_id(comment_id)
+        if reloaded is None:
+            raise NotFound("댓글을 찾을 수 없습니다")
+        return reloaded
 
     async def delete(self, *, slug: str, comment_id: int, author_id: int) -> None:
         article = await self._articles.get_by_slug(slug)

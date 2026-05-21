@@ -13,8 +13,9 @@ class CommentRepo:
         comment = Comment(body=body, author_id=author_id, article_id=article_id)
         self._session.add(comment)
         await self._session.flush()
-        await self._session.refresh(comment, attribute_names=["author"])
-        return comment
+        reloaded = await self.get_by_id(comment.id)
+        assert reloaded is not None
+        return reloaded
 
     async def list_by_article(self, article_id: int) -> list[Comment]:
         stmt = (
@@ -27,11 +28,7 @@ class CommentRepo:
         return list(result.scalars().unique().all())
 
     async def get_by_id(self, comment_id: int) -> Comment | None:
-        stmt = (
-            select(Comment)
-            .where(Comment.id == comment_id)
-            .options(selectinload(Comment.author))
-        )
+        stmt = select(Comment).where(Comment.id == comment_id).options(selectinload(Comment.author))
         result = await self._session.execute(stmt)
         return result.scalars().unique().one_or_none()
 

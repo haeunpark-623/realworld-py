@@ -162,3 +162,29 @@ async def test_delete_by_other_returns_403(integration_client: AsyncClient) -> N
         headers={"Authorization": f"Token {bob_token}"},
     )
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_delete_cascades_comments(integration_client: AsyncClient) -> None:
+    token = await register_user(integration_client, username="jane", email="jane@example.com")
+    article = await _create_article(integration_client, token, title="Soon Deleted")
+    for body in ("first", "second"):
+        response = await integration_client.post(
+            f"/api/articles/{article['slug']}/comments",
+            json={"comment": {"body": body}},
+            headers={"Authorization": f"Token {token}"},
+        )
+        assert response.status_code == 201, response.text
+
+    list_before = await integration_client.get(f"/api/articles/{article['slug']}/comments")
+    assert len(list_before.json()["comments"]) == 2
+
+    delete_resp = await integration_client.delete(
+        f"/api/articles/{article['slug']}",
+        headers={"Authorization": f"Token {token}"},
+    )
+    assert delete_resp.status_code == 204
+
+    list_after = await integration_client.get(f"/api/articles/{article['slug']}/comments")
+    assert list_after.status_code == 404
+    assert "찾을 수 없습니다" in list_after.json()["errors"]["body"][0]

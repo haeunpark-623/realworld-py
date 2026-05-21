@@ -9,6 +9,7 @@ from realworld.config import get_settings
 from realworld.db import engine
 from realworld.errors import RealWorldError
 from realworld.routers import articles as articles_router
+from realworld.routers import comments as comments_router
 from realworld.routers import users as users_router
 
 
@@ -50,6 +51,7 @@ def create_app() -> FastAPI:
 
     app.include_router(users_router.router)
     app.include_router(articles_router.router)
+    app.include_router(comments_router.router)
 
     return app
 
