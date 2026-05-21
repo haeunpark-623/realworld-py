@@ -18,6 +18,11 @@ class UserRepo:
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def find_by_id(self, user_id: int) -> User | None:
+        stmt = select(User).where(User.id == user_id)
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def create(self, username: str, email: str, password_hash: str) -> User:
         user = User(username=username, email=email, password_hash=password_hash)
         self._session.add(user)
