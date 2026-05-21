@@ -62,6 +62,8 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S105", "S106"]
+"realworld/errors.py" = ["N818"]  # RealWorld 도메인 명명 보존 (DuplicateEmail / InvalidToken / NotFound 등)
+"realworld/deps/**" = ["B008", "S105"]  # FastAPI Depends/Header argument default 표준 패턴 + Token prefix 상수
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
