@@ -1,6 +1,6 @@
 ---
 doc_type: index
-version: v0.13
+version: v0.14
 status: Draft
 author: woosung.ahn@bespinglobal.com
 date: 2026-05-21
@@ -10,12 +10,13 @@ related: { R-ID: [], F-ID: [], supersedes: null }
 
 # realworld-py — docs/planning Index
 
-> Phase 1~4/4 NEW_PROJECT 메타 모두 완료. mode=sprint 진입. Sprint 1 5/5 + Sprint 2 3/5 머지 완료 (PR #11~#18). Sprint 2 핵심 마일스톤 진행 중 — Issue #9 PR #19 머지 대기 (status:in-review). 게시판 6 화면 + 댓글 UI + 골든패스 시도.
+> **2일 학습 사이클 완주(예정)** — Phase 1~4/4 NEW_PROJECT 메타 모두 완료. Sprint 1·2 × 10 이슈 모두 머지 또는 대기 (PR #11~#20). 마지막 PR #20(I-10 closing)이 머지되면 **Sprint 1·2 10/10 — 사이클 완주**. Backend pytest 77 passed + Frontend Vite build 60 modules. 보안 자동 점검 4 항목 PASS.
 
 ## 변경 이력
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.14 | 2026-05-21 | woosung.ahn@bespinglobal.com | **사이클 종료 PR #20 open** — Issue #9 머지 완료(PR #19) + 마지막 Issue #10 작업 진입 (status:in-review). 14-wbs v0.13. feat-closing-cycle 8 산출 + README.md + CHANGELOG.md v0.1.0(Keep a Changelog 형식) + retro `docs/planning/retro/2026-05-21-cycle.md`(5+5+5 형식). 보안 자동 점검 4 항목 PASS — `.env` git 0건 / JWT 평문 0건 / secret 평문 0건 / CORS=`http://localhost:5173` wildcard 미사용. backend pytest **77 passed** 회귀 안정. 본 PR 머지 시 **Sprint 1·2 10/10 — AI 페어 학습 과제 2일(16h) 완주** |
 | v0.13 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #8 머지 완료(PR #18) + Issue #9 작업 진입 + PR #19 open (status:in-review). 14-wbs v0.12 (I-09 status:in-review). feat-board-ui 8 산출. **Sprint 2 핵심 마일스톤** — 6 화면 실 동작(HomePage 목록+페이지네이션+4 상태 / ArticlePage 본문+댓글 UI+작성자 액션+삭제 모달 / EditorPage 새 글+수정 / ProfilePage R-F-12) + 3 신규 컴포넌트(ArticleCard·CommentItem 인라인 편집 R-F-13·Modal). **P2 컷 후보 3종 모두 본 PR 채택** — 시간 박스 fit. 빌드 60 modules in 1.14s + CSS 10.91KB(+2.83KB I-08 대비). 골든패스 7단계 + FCP/XSS Manual verification. 다음: I-10 (Sprint 2 마지막 — /cso·README·CHANGELOG·/retro) |
 | v0.12 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #7 머지 완료 (PR #17) + Issue #8 작업 진입 + PR #18 open (status:in-review). 14-wbs v0.11 (I-08 status:in-review). feat-auth-ui 8 산출 + types/api.ts ErrorBody·extractErrorMessage + LoginPage·RegisterPage 실 폼(controlled inputs + 422 한글 에러 인라인) + Header logged-in/out 분기 + App.tsx mount loadFromStorage. store/auth.ts·api/client.ts 무수정(I-07 시그니처 그대로). build 57 modules in 1.52s + CSS 8.08KB(+1.76KB I-07 대비). ui_changed=false (시각 디자인 변경 0). 다음: I-09 게시판 |
 | v0.11 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #6 머지 완료 (PR #16) + Issue #7 작업 진입 + PR #17 open (status:in-review). 12-scaffolding v0.8 (§1 frontend 트리 npm 채택 + §5.2·§5.3 부팅 명령 npm 갱신 + §6 VITE_API_BASE_URL=/api proxy + §7 lockfile package-lock.json). LOCAL.md v0.3 (§1·§2·§3.1·§4·§5.7 pnpm→npm 갱신, frontend 실 검증 표기). 14-wbs v0.10 (I-07 status:in-review). feat-frontend-scaffold 8 산출 + Vite 5.4 + React 18.3 + TS 5.6 + Tailwind 3.4 + react-router-dom 6.28 + zustand 4.5 + 6 페이지 placeholder + Header + api/store/types placeholder. npm install 140 packages + build 41 modules in 1.38s + dev ready in 346ms @ 5173. 다음: I-08 auth UI |
