@@ -64,6 +64,10 @@ export default function RegisterPage() {
             minLength={1}
             maxLength={64}
             autoComplete="username"
+            onInvalid={(e) =>
+              e.currentTarget.setCustomValidity("사용자명을 입력해 주세요")
+            }
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
         </div>
@@ -78,6 +82,12 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
+            onInvalid={(e) => {
+              const el = e.currentTarget;
+              if (el.validity.valueMissing) el.setCustomValidity("이메일을 입력해 주세요");
+              else if (el.validity.typeMismatch) el.setCustomValidity("이메일 형식이 올바르지 않습니다");
+            }}
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
         </div>
@@ -94,6 +104,12 @@ export default function RegisterPage() {
             minLength={8}
             maxLength={128}
             autoComplete="new-password"
+            onInvalid={(e) => {
+              const el = e.currentTarget;
+              if (el.validity.valueMissing) el.setCustomValidity("비밀번호를 입력해 주세요");
+              else if (el.validity.tooShort) el.setCustomValidity("비밀번호는 최소 8자 이상이어야 합니다");
+            }}
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
           <p className="text-xs text-gray-500">최소 8자 이상</p>

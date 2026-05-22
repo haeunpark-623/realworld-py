@@ -107,6 +107,10 @@ export default function EditorPage() {
             onChange={(e) => setTitle(e.target.value)}
             required
             maxLength={255}
+            onInvalid={(e) =>
+              e.currentTarget.setCustomValidity("제목을 입력해 주세요")
+            }
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
         </div>
@@ -133,6 +137,10 @@ export default function EditorPage() {
             onChange={(e) => setBody(e.target.value)}
             required
             rows={10}
+            onInvalid={(e) =>
+              e.currentTarget.setCustomValidity("본문을 입력해 주세요")
+            }
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
         </div>
