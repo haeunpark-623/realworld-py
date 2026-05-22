@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Header from "./components/Header";
+import RequireAuth from "./components/RequireAuth";
 import ArticlePage from "./pages/ArticlePage";
 import EditorPage from "./pages/EditorPage";
 import HomePage from "./pages/HomePage";
@@ -22,11 +23,14 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/article/:slug" element={<ArticlePage />} />
-          <Route path="/editor" element={<EditorPage />} />
-          <Route path="/editor/:slug" element={<EditorPage />} />
+          <Route path="/editor" element={<RequireAuth><EditorPage /></RequireAuth>} />
+          <Route path="/editor/:slug" element={<RequireAuth><EditorPage /></RequireAuth>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route
+            path="/profile/:username"
+            element={<RequireAuth><ProfilePage /></RequireAuth>}
+          />
         </Routes>
       </main>
     </div>
