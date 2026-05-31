@@ -16,9 +16,14 @@ export default function CommentItem({ comment, currentUsername, onUpdate, onDele
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(comment.body);
   const [submitting, setSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   async function handleSave() {
-    if (!draft.trim()) return;
+    if (!draft.trim()) {
+      setValidationError("댓글 내용을 입력해 주세요");
+      return;
+    }
+    setValidationError(null);
     setSubmitting(true);
     try {
       await onUpdate(comment.id, draft);
@@ -41,9 +46,17 @@ export default function CommentItem({ comment, currentUsername, onUpdate, onDele
     <article className="rounded border border-gray-200 p-3">
       {editing ? (
         <div className="space-y-2">
+          {validationError && (
+            <p role="alert" className="text-xs text-red-600">
+              {validationError}
+            </p>
+          )}
           <textarea
             value={draft}
-            onChange={(e) => setDraft(e.target.value)}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              if (validationError) setValidationError(null);
+            }}
             rows={3}
             className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-600 focus:outline-none"
           />

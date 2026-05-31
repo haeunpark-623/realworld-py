@@ -61,6 +61,12 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
+            onInvalid={(e) => {
+              const el = e.currentTarget;
+              if (el.validity.valueMissing) el.setCustomValidity("이메일을 입력해 주세요");
+              else if (el.validity.typeMismatch) el.setCustomValidity("이메일 형식이 올바르지 않습니다");
+            }}
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
         </div>
@@ -75,6 +81,10 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
+            onInvalid={(e) =>
+              e.currentTarget.setCustomValidity("비밀번호를 입력해 주세요")
+            }
+            onInput={(e) => e.currentTarget.setCustomValidity("")}
             className="w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-blue-600 focus:outline-none"
           />
         </div>

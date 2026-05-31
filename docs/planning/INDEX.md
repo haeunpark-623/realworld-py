@@ -1,21 +1,22 @@
 ---
 doc_type: index
-version: v0.14
+version: v0.15
 status: Draft
 author: woosung.ahn@bespinglobal.com
-date: 2026-05-21
+date: 2026-05-22
 gate: ""
 related: { R-ID: [], F-ID: [], supersedes: null }
 ---
 
 # realworld-py — docs/planning Index
 
-> **2일 학습 사이클 완주(예정)** — Phase 1~4/4 NEW_PROJECT 메타 모두 완료. Sprint 1·2 × 10 이슈 모두 머지 또는 대기 (PR #11~#20). 마지막 PR #20(I-10 closing)이 머지되면 **Sprint 1·2 10/10 — 사이클 완주**. Backend pytest 77 passed + Frontend Vite build 60 modules. 보안 자동 점검 4 항목 PASS.
+> **2일 사이클 완주 + 차세대 follow-up 진입** — Sprint 1·2 10/10 머지 완료 (PR #11~#20). 본 PR #22(Issue #21)는 PRD §3 F-01 실패 path acceptance gap 3건 closure — 비로그인 차단·한글 폼 에러·JWT 만료 자동 logout. 다음: F-TAG-FEED / F-FAVORITE / F-FOLLOW 신규 기능 follow-up.
 
 ## 변경 이력
 
 | Version | Date | Author | Change |
 |---|---|---|---|
+| v0.15 | 2026-05-22 | woosung.ahn@bespinglobal.com | **Follow-up bug PR #22 open** — Sprint 1·2 10/10 머지 후 PRD acceptance gap closure. Issue #21 (bug/auth-ux-gap-issue-21). fix(frontend) 3 + docs(plan) 1 = 4 커밋. 3건 동시 fix: (A) RequireAuth 컴포넌트 + App.tsx 3 라우트 wrap(/editor·/editor/:slug·/profile/:username) — 비로그인 차단(PRD F-02 실패-2) / (B) LoginPage·RegisterPage·EditorPage·CommentItem 4 폼 onInvalid 한글 메시지 — F-04 §5 한글 원칙 / (D) api/client.ts 401 자동 logout + /login(PRD F-01 실패-3). I-08 simple catch 패턴 회귀 결정 — contract §1·plan §5·retro 양축 trace. 빌드 61 modules + CSS 10.91KB 변경 0(시각 무변경 정량 증거). 회귀: backend 77 passed. 다음: F-TAG-FEED 신규 기능 |
 | v0.14 | 2026-05-21 | woosung.ahn@bespinglobal.com | **사이클 종료 PR #20 open** — Issue #9 머지 완료(PR #19) + 마지막 Issue #10 작업 진입 (status:in-review). 14-wbs v0.13. feat-closing-cycle 8 산출 + README.md + CHANGELOG.md v0.1.0(Keep a Changelog 형식) + retro `docs/planning/retro/2026-05-21-cycle.md`(5+5+5 형식). 보안 자동 점검 4 항목 PASS — `.env` git 0건 / JWT 평문 0건 / secret 평문 0건 / CORS=`http://localhost:5173` wildcard 미사용. backend pytest **77 passed** 회귀 안정. 본 PR 머지 시 **Sprint 1·2 10/10 — AI 페어 학습 과제 2일(16h) 완주** |
 | v0.13 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #8 머지 완료(PR #18) + Issue #9 작업 진입 + PR #19 open (status:in-review). 14-wbs v0.12 (I-09 status:in-review). feat-board-ui 8 산출. **Sprint 2 핵심 마일스톤** — 6 화면 실 동작(HomePage 목록+페이지네이션+4 상태 / ArticlePage 본문+댓글 UI+작성자 액션+삭제 모달 / EditorPage 새 글+수정 / ProfilePage R-F-12) + 3 신규 컴포넌트(ArticleCard·CommentItem 인라인 편집 R-F-13·Modal). **P2 컷 후보 3종 모두 본 PR 채택** — 시간 박스 fit. 빌드 60 modules in 1.14s + CSS 10.91KB(+2.83KB I-08 대비). 골든패스 7단계 + FCP/XSS Manual verification. 다음: I-10 (Sprint 2 마지막 — /cso·README·CHANGELOG·/retro) |
 | v0.12 | 2026-05-21 | woosung.ahn@bespinglobal.com | Sprint 2 Issue #7 머지 완료 (PR #17) + Issue #8 작업 진입 + PR #18 open (status:in-review). 14-wbs v0.11 (I-08 status:in-review). feat-auth-ui 8 산출 + types/api.ts ErrorBody·extractErrorMessage + LoginPage·RegisterPage 실 폼(controlled inputs + 422 한글 에러 인라인) + Header logged-in/out 분기 + App.tsx mount loadFromStorage. store/auth.ts·api/client.ts 무수정(I-07 시그니처 그대로). build 57 modules in 1.52s + CSS 8.08KB(+1.76KB I-07 대비). ui_changed=false (시각 디자인 변경 0). 다음: I-09 게시판 |
