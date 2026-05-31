@@ -36,10 +36,11 @@ async def list_articles(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     author: str | None = None,
+    tag: str | None = None,
     session: AsyncSession = Depends(get_db),
 ) -> ArticlesListResponse:
     service = ArticleService(session)
-    articles, total = await service.list(limit=limit, offset=offset, author=author)
+    articles, total = await service.list(limit=limit, offset=offset, author=author, tag=tag)
     return ArticlesListResponse(articles=[_to_view(a) for a in articles], articles_count=total)
 
 
