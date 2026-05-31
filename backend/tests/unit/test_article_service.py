@@ -66,6 +66,24 @@ async def test_list_returns_articles_with_count(db_session: AsyncSession) -> Non
 
 
 @pytest.mark.asyncio
+async def test_list_with_tag_filter_returns_only_matching(db_session: AsyncSession) -> None:
+    author_id = await _create_user(db_session, username="jane", email="jane@example.com")
+    service = ArticleService(db_session)
+    await service.create(
+        author_id=author_id, title="Py post", description=None, body="b", tag_list=["python"]
+    )
+    await service.create(
+        author_id=author_id, title="Mixed", description=None, body="b", tag_list=["python", "react"]
+    )
+    await service.create(
+        author_id=author_id, title="React only", description=None, body="b", tag_list=["react"]
+    )
+    articles, total = await service.list(limit=20, offset=0, tag="python")
+    assert total == 2
+    assert all("python" in {t.name for t in a.tags} for a in articles)
+
+
+@pytest.mark.asyncio
 async def test_get_by_slug_raises_not_found_for_missing(db_session: AsyncSession) -> None:
     service = ArticleService(db_session)
     with pytest.raises(NotFound):

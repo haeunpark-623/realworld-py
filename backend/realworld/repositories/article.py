@@ -2,7 +2,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from realworld.models.article import Article, Tag
+from realworld.models.article import Article, Tag, article_tags
 from realworld.models.user import User
 
 
@@ -11,7 +11,12 @@ class ArticleRepo:
         self._session = session
 
     async def list_with_filters(
-        self, *, limit: int = 20, offset: int = 0, author: str | None = None
+        self,
+        *,
+        limit: int = 20,
+        offset: int = 0,
+        author: str | None = None,
+        tag: str | None = None,
     ) -> tuple[list[Article], int]:
         base_stmt = select(Article)
         count_stmt = select(func.count()).select_from(Article)
@@ -21,6 +26,17 @@ class ArticleRepo:
             )
             count_stmt = count_stmt.join(User, Article.author_id == User.id).where(
                 User.username == author
+            )
+        if tag is not None:
+            base_stmt = (
+                base_stmt.join(article_tags, article_tags.c.article_id == Article.id)
+                .join(Tag, Tag.id == article_tags.c.tag_id)
+                .where(Tag.name == tag)
+            )
+            count_stmt = (
+                count_stmt.join(article_tags, article_tags.c.article_id == Article.id)
+                .join(Tag, Tag.id == article_tags.c.tag_id)
+                .where(Tag.name == tag)
             )
         stmt = (
             base_stmt.options(selectinload(Article.tags))
@@ -32,6 +48,11 @@ class ArticleRepo:
         articles = list(result.scalars().unique().all())
         total = (await self._session.execute(count_stmt)).scalar_one()
         return articles, int(total)
+
+    async def list_all_tag_names(self) -> list[str]:
+        stmt = select(Tag.name).order_by(Tag.name.asc())
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
 
     async def get_by_slug(self, slug: str) -> Article | None:
         stmt = select(Article).where(Article.slug == slug).options(selectinload(Article.tags))

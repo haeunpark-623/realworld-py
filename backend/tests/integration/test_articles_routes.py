@@ -54,6 +54,41 @@ async def test_list_with_unknown_author_returns_empty(integration_client: AsyncC
 
 
 @pytest.mark.asyncio
+async def test_list_with_tag_filter_returns_only_matching_articles(
+    integration_client: AsyncClient,
+) -> None:
+    jane_token = await register_user(integration_client, username="jane", email="jane@example.com")
+    bob_token = await register_user(integration_client, username="bob", email="bob@example.com")
+    for token, title, tags in (
+        (jane_token, "Python post", ["python", "fastapi"]),
+        (bob_token, "React post", ["react", "frontend"]),
+        (jane_token, "Mixed post", ["python", "react"]),
+    ):
+        response = await integration_client.post(
+            "/api/articles",
+            json={"article": {"title": title, "description": None, "body": "b", "tagList": tags}},
+            headers={"Authorization": f"Token {token}"},
+        )
+        assert response.status_code == 201, response.text
+
+    response = await integration_client.get("/api/articles?tag=python")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["articlesCount"] == 2
+    assert all("python" in a["tagList"] for a in body["articles"])
+
+    response = await integration_client.get("/api/articles?author=jane&tag=python")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["articlesCount"] == 2
+    assert all(a["author"]["username"] == "jane" for a in body["articles"])
+
+    response = await integration_client.get("/api/articles?tag=nonexistent")
+    assert response.status_code == 200
+    assert response.json() == {"articles": [], "articlesCount": 0}
+
+
+@pytest.mark.asyncio
 async def test_detail_returns_article(integration_client: AsyncClient) -> None:
     token = await register_user(integration_client, username="jane", email="jane@example.com")
     article = await _create_article(integration_client, token, title="My Post")

@@ -72,3 +72,7 @@ export type CommentResponse = {
 export type CommentsListResponse = {
   comments: CommentView[];
 };
+
+export type TagsListResponse = {
+  tags: string[];
+};

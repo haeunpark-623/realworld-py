@@ -14,9 +14,16 @@ class ArticleService:
         self._articles = ArticleRepo(session)
 
     async def list(
-        self, *, limit: int = 20, offset: int = 0, author: str | None = None
+        self,
+        *,
+        limit: int = 20,
+        offset: int = 0,
+        author: str | None = None,
+        tag: str | None = None,
     ) -> tuple[list[Article], int]:
-        return await self._articles.list_with_filters(limit=limit, offset=offset, author=author)
+        return await self._articles.list_with_filters(
+            limit=limit, offset=offset, author=author, tag=tag
+        )
 
     async def get_by_slug(self, slug: str) -> Article:
         article = await self._articles.get_by_slug(slug)
